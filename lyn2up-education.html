@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LYN2UP — Education & Learning Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050a14;--bg2:#0a1220;--bg3:#0f1a2e;--card:#0d1826;--border:#1a2d4a;
+  --accent:#00e5ff;--accent2:#7c3aed;--accent3:#f59e0b;--accent4:#10b981;
+  --accent5:#f43f5e;--accent6:#3b82f6;--text:#e2eaf4;--muted:#5a7a9a;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(124,58,237,.12),transparent 60%),radial-gradient(ellipse 50% 30% at 10% 90%,rgba(0,229,255,.07),transparent 60%);pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:56px 56px;pointer-events:none;z-index:0}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:58px;display:flex;align-items:center;padding:0 20px;gap:16px;background:rgba(5,10,20,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;flex-shrink:0;letter-spacing:-.02em}
+.logo em{font-style:normal;-webkit-text-fill-color:var(--accent3)}
+.nav-links{display:flex;gap:2px;overflow-x:auto;flex:1}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:500;padding:5px 10px;border-radius:6px;cursor:pointer;transition:.2s;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.nav-btn:hover,.nav-btn.active{color:var(--accent);background:rgba(0,229,255,.08)}
+
+/* PAGES */
+main{position:relative;z-index:1;padding-top:58px}
+.page{display:none;animation:fadeIn .3s ease}
+.page.show{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* HERO */
+.hero{min-height:calc(100vh - 58px);display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+.hero-inner{max-width:680px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.18);border-radius:100px;padding:6px 16px;font-size:.72rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
+.badge-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:blink 2s infinite}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,6vw,4.8rem);font-weight:800;line-height:1.0;letter-spacing:-.04em;margin-bottom:20px}
+.hero h1 span{display:block;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:.97rem;color:var(--muted);line-height:1.7;margin-bottom:32px;font-weight:300}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.stats-row{display:flex;gap:32px;justify-content:center;margin-top:52px;flex-wrap:wrap}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--accent);letter-spacing:-.04em}
+.stat-lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+
+/* SECTION */
+.sect{max-width:1180px;margin:0 auto;padding:40px 20px}
+.sect-hdr{margin-bottom:28px}
+.sect-tag{font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:block;font-family:'DM Mono',monospace}
+.sect-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;letter-spacing:-.03em;margin-bottom:10px}
+.sect-desc{color:var(--muted);font-size:.88rem;line-height:1.7}
+
+/* BUTTONS */
+.btn{border:none;padding:10px 22px;border-radius:10px;font-size:.84rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),#5b21b6);color:#fff;box-shadow:0 0 20px rgba(124,58,237,.25)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(124,58,237,.45)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,.05)}
+.btn-success{background:linear-gradient(135deg,var(--accent4),#059669);color:#fff}
+.btn-danger{background:linear-gradient(135deg,var(--accent5),#be123c);color:#fff}
+.btn-sm{padding:6px 13px;font-size:.76rem;border-radius:8px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+/* CARDS */
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;transition:.3s;cursor:pointer;position:relative}
+.card:hover{transform:translateY(-3px);border-color:rgba(0,229,255,.2);box-shadow:0 12px 32px rgba(0,0,0,.3),0 0 18px rgba(0,229,255,.05)}
+.card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:15px}
+.card-title{font-family:'Syne',sans-serif;font-size:.98rem;font-weight:700;margin-bottom:7px}
+.card-desc{font-size:.81rem;color:var(--muted);line-height:1.6}
+.card-footer{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:.74rem;color:var(--muted)}
+
+/* ICON COLOR VARIANTS */
+.ic-a{background:rgba(0,229,255,.1);color:var(--accent)}
+.ic-b{background:rgba(124,58,237,.12);color:var(--accent2)}
+.ic-c{background:rgba(245,158,11,.12);color:var(--accent3)}
+.ic-d{background:rgba(16,185,129,.12);color:var(--accent4)}
+.ic-e{background:rgba(244,63,94,.12);color:var(--accent5)}
+.ic-f{background:rgba(59,130,246,.12);color:var(--accent6)}
+
+/* BADGES */
+.badge{font-size:.66rem;padding:3px 9px;border-radius:100px;font-weight:500;display:inline-block}
+.ba{background:rgba(0,229,255,.1);color:var(--accent)}
+.bb{background:rgba(124,58,237,.12);color:var(--accent2)}
+.bc{background:rgba(245,158,11,.12);color:var(--accent3)}
+.bd{background:rgba(16,185,129,.12);color:var(--accent4)}
+.be{background:rgba(244,63,94,.12);color:var(--accent5)}
+.bf{background:rgba(59,130,246,.12);color:var(--accent6)}
+
+/* TABS */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;padding:9px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s;white-space:nowrap}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* SEARCH BAR */
+.search{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 16px;margin-bottom:18px}
+.search input{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.87rem;flex:1}
+.search input::placeholder{color:var(--muted)}
+
+/* CHIPS */
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.chip{padding:4px 12px;border-radius:100px;border:1px solid var(--border);font-size:.73rem;cursor:pointer;color:var(--muted);background:var(--card);transition:.15s}
+.chip.active,.chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,.06)}
+
+/* STAT CARDS ROW */
+.stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.sc-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-.04em}
+.sc-lbl{font-size:.74rem;color:var(--muted);margin-top:4px}
+.sc-chg{font-size:.7rem;margin-top:7px}
+.up{color:var(--accent4)}
+.dn{color:var(--accent5)}
+
+/* PANEL */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.panel-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:14px}
+
+/* TABLE */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:14px}
+.tbl-head{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.tbl-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{text-align:left;padding:10px 14px;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border);font-weight:500}
+td{padding:12px 14px;border-bottom:1px solid rgba(26,45,74,.35)}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.015)}
+
+/* FORM ELEMENTS */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{margin-bottom:14px}
+.lbl{font-size:.74rem;color:var(--muted);display:block;margin-bottom:5px;letter-spacing:.03em}
+input.fi,select.fi,textarea.fi{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:9px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.84rem;outline:none;transition:.2s}
+input.fi:focus,select.fi:focus,textarea.fi:focus{border-color:var(--accent2)}
+select.fi option{background:var(--bg2)}
+textarea.fi{resize:vertical;min-height:72px}
+
+/* PROGRESS BAR */
+.pbar{height:4px;background:var(--border);border-radius:100px;overflow:hidden;margin-top:7px}
+.pfill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s ease}
+.pfill.done{background:linear-gradient(90deg,var(--accent4),#059669)}
+
+/* LIVE INDICATOR */
+.live-dot{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;color:var(--accent5);font-weight:500}
+.live-dot::before{content:'';width:6px;height:6px;background:var(--accent5);border-radius:50%;animation:blink 1.4s infinite}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:28px;max-width:500px;width:100%;max-height:88vh;overflow-y:auto;position:relative;transform:translateY(18px);transition:transform .22s}
+.modal-bg.open .modal-box{transform:translateY(0)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;line-height:1}
+.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;margin-bottom:5px}
+.modal-sub{color:var(--muted);font-size:.8rem;margin-bottom:18px}
+
+/* TOAST */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:9px}
+.toast{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:.8rem;display:flex;align-items:center;gap:9px;min-width:220px;animation:slideIn .25s ease;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+@keyframes slideIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.ok{border-color:rgba(16,185,129,.3)}
+.toast.err{border-color:rgba(244,63,94,.3)}
+.toast.info{border-color:rgba(0,229,255,.3)}
+
+/* COURSE ITEM */
+.course-row{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px 18px;display:flex;align-items:center;gap:15px;transition:.2s;cursor:pointer;margin-bottom:10px}
+.course-row:hover{border-color:rgba(0,229,255,.18)}
+.course-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.course-name{font-family:'Syne',sans-serif;font-weight:600;font-size:.88rem;margin-bottom:3px}
+.course-meta{font-size:.74rem;color:var(--muted)}
+
+/* EXAM */
+.exam-wrap{max-width:640px;margin:0 auto}
+.exam-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px}
+.q-text{font-size:1.02rem;font-weight:500;margin-bottom:20px;line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;transition:.18s;display:flex;align-items:center;gap:11px;font-size:.86rem;user-select:none}
+.opt:hover:not(.locked){border-color:rgba(0,229,255,.25);background:rgba(0,229,255,.04)}
+.opt.sel{border-color:var(--accent2);background:rgba(124,58,237,.1)}
+.opt.correct{border-color:var(--accent4)!important;background:rgba(16,185,129,.12)!important}
+.opt.wrong{border-color:var(--accent5)!important;background:rgba(244,63,94,.12)!important}
+.opt.locked{pointer-events:none}
+.opt-ltr{width:26px;height:26px;border-radius:6px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace}
+.timer{font-family:'DM Mono',monospace;font-size:1.3rem;font-weight:500;color:var(--accent3)}
+.timer.warn{color:var(--accent5);animation:blink .7s infinite}
+.ex-prog{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px}
+.ep{width:20px;height:5px;border-radius:3px;background:var(--border);transition:.2s}
+.ep.cur{background:var(--accent)}
+.ep.ok{background:var(--accent4)}
+.ep.bad{background:var(--accent5)}
+
+/* ATTENDANCE CALENDAR */
+.att-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day-hdr{font-size:.6rem;color:var(--muted);text-align:center;padding:2px 0}
+.att-day{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.68rem;border:1px solid transparent;cursor:default;transition:.15s}
+.att-day.present{background:rgba(16,185,129,.18);color:var(--accent4)}
+.att-day.absent{background:rgba(244,63,94,.18);color:var(--accent5)}
+.att-day.late{background:rgba(245,158,11,.18);color:var(--accent3)}
+.att-day.today{border-color:var(--accent);color:var(--accent);font-weight:700}
+.att-day.future{background:rgba(15,26,46,.6);color:var(--muted);opacity:.45}
+.att-day.empty{opacity:0;pointer-events:none}
+
+/* QR */
+.qr-wrap{background:#fff;border-radius:14px;padding:12px;display:inline-block;box-shadow:0 0 32px rgba(0,229,255,.13)}
+
+/* BOOK GRID */
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px}
+.book-card{background:var(--card);border:1px solid var(--border);border-radius:11px;overflow:hidden;cursor:pointer;transition:.2s}
+.book-card:hover{transform:translateY(-3px);border-color:rgba(0,229,255,.2)}
+.book-cover{height:100px;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.book-info{padding:10px}
+.book-title{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;margin-bottom:3px;line-height:1.3}
+.book-author{font-size:.69rem;color:var(--muted)}
+
+/* INTERNSHIP ITEM */
+.int-item{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:11px;transition:.2s}
+.int-item:hover{border-color:rgba(0,229,255,.16);transform:translateY(-2px)}
+.co-logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;border:1px solid var(--border)}
+.int-role{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:2px}
+.int-co{font-size:.78rem;color:var(--muted);margin-bottom:8px}
+.int-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.int-meta{font-size:.72rem;color:var(--muted)}
+
+/* RESULT BARS */
+.rbar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rbar-lbl{font-size:.78rem;width:120px;flex-shrink:0}
+.rbar-track{flex:1;height:6px;background:var(--border);border-radius:100px;overflow:hidden}
+.rbar-fill{height:100%;border-radius:100px;transition:width 1.1s ease}
+.rbar-val{font-size:.76rem;font-family:'DM Mono',monospace;width:36px;text-align:right}
+
+/* NOTICE ITEM */
+.notice-item{display:flex;gap:11px;align-items:flex-start;padding:13px 0;border-bottom:1px solid rgba(26,45,74,.4)}
+.notice-item:last-child{border-bottom:none}
+.notice-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:100px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .stat-cards{grid-template-columns:1fr 1fr}
+  .grid-2{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .sect{padding:28px 14px}
+  .hero h1{font-size:2.3rem}
+}
+@media(max-width:480px){.stat-cards{grid-template-columns:1fr}.book-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="goPage('home')">LYN<em>2</em>UP</div>
+  <div class="nav-links">
+    <button class="nav-btn active" data-pg="home"    onclick="goPage('home')">Home</button>
+    <button class="nav-btn"        data-pg="learning" onclick="goPage('learning')">📚 Learning</button>
+    <button class="nav-btn"        data-pg="students" onclick="goPage('students')">🏫 Students</button>
+    <button class="nav-btn"        data-pg="exams"    onclick="goPage('exams')">📝 Exams</button>
+    <button class="nav-btn"        data-pg="attend"   onclick="goPage('attend')">📱 Attendance</button>
+    <button class="nav-btn"        data-pg="intern"   onclick="goPage('intern')">💼 Internships</button>
+    <button class="nav-btn"        data-pg="library"  onclick="goPage('library')">📖 Library</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════ HOME ═══════════════════════ -->
+<div class="page show" id="pg-home">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge"><div class="badge-dot"></div>Cloud-Based Education Ecosystem</div>
+      <h1>The Future of<br><span>Education Lives Here</span></h1>
+      <p>LYN2UP is your complete cloud education platform — smart learning, secure exams, real-time attendance, internships, and a digital library all in one unified ecosystem.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="goPage('learning')">Explore Platform</button>
+        <button class="btn btn-ghost"   onclick="goPage('students')">Student Dashboard</button>
+      </div>
+      <div class="stats-row">
+        <div><div class="stat-num" id="h-students">0</div><div class="stat-lbl">Students</div></div>
+        <div><div class="stat-num" id="h-courses">0</div><div class="stat-lbl">Courses</div></div>
+        <div><div class="stat-num" id="h-pass">0%</div><div class="stat-lbl">Pass Rate</div></div>
+        <div><div class="stat-num">6</div><div class="stat-lbl">Modules</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="sect" style="padding-top:0">
+    <div class="grid-3">
+      <div class="card" onclick="goPage('learning')"><div class="card-icon ic-a">🎓</div><div class="card-title">Smart Learning Platform</div><div class="card-desc">Cloud-based courses with live sessions, lecture streaming, and progress tracking.</div><div class="card-footer"><span class="badge ba">Module A</span> 480 courses</div></div>
+      <div class="card" onclick="goPage('students')"><div class="card-icon ic-b">🏫</div><div class="card-title">Student Management</div><div class="card-desc">Centralized academic management with attendance, results, notices, and dashboards.</div><div class="card-footer"><span class="badge bb">Module B</span> 12K+ students</div></div>
+      <div class="card" onclick="goPage('exams')"><div class="card-icon ic-c">📝</div><div class="card-title">Online Examinations</div><div class="card-desc">Secure exams with auto-evaluation, anti-cheating, and result analytics.</div><div class="card-footer"><span class="badge bc">Module C</span> 96% pass rate</div></div>
+      <div class="card" onclick="goPage('attend')"><div class="card-icon ic-d">📱</div><div class="card-title">Attendance Tracking</div><div class="card-desc">QR/mobile-based real-time attendance with analytics and instant alerts.</div><div class="card-footer"><span class="badge bd">Module D</span> <span class="live-dot">Live</span></div></div>
+      <div class="card" onclick="goPage('intern')"><div class="card-icon ic-e">💼</div><div class="card-title">Internship & Training</div><div class="card-desc">Connect students with internships, training programs, and certifications.</div><div class="card-footer"><span class="badge be">Module E</span> 240+ companies</div></div>
+      <div class="card" onclick="goPage('library')"><div class="card-icon ic-f">📚</div><div class="card-title">Digital Library</div><div class="card-desc">Manage physical and digital resources with secure role-based access.</div><div class="card-footer"><span class="badge bf">Module F</span> 50K+ books</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ LEARNING ═══════════════════════ -->
+<div class="page" id="pg-learning">
+  <div class="sect">
+    <div class="sect-hdr">
+      <span class="sect-tag">Module A</span>
+      <h2 class="sect-title">Smart Learning Platform</h2>
+      <p class="sect-desc">Cloud-based courses, live sessions, and real-time progress tracking.</p>
+    </div>
+    <div class="tabs" id="learn-tabs">
+      <button class="tab active" onclick="switchTab('learn','my',this)">My Courses</button>
+      <button class="tab"        onclick="switchTab('learn','browse',this)">Browse All</button>
+      <button class="tab"        onclick="switchTab('learn','live',this)">🔴 Live Sessions</button>
+      <button class="tab"        onclick="switchTab('learn','enroll',this)">+ Enroll</button>
+    </div>
+
+    <div class="tab-panel active" id="learn-my">
+      <div class="search"><span style="color:var(--muted)">🔍</span><input id="cs-search" placeholder="Search courses or instructors…" oninput="renderMyCourses()"></div>
+      <div id="my-courses"></div>
+    </div>
+
+    <div class="tab-panel" id="learn-browse">
+      <div class="chips" id="browse-chips">
+        <div class="chip active" onclick="setBrowseCat('All',this)">All</div>
+        <div class="chip" onclick="setBrowseCat('CS',this)">Computer Science</div>
+        <div class="chip" onclick="setBrowseCat('Math',this)">Mathematics</div>
+        <div class="chip" onclick="setBrowseCat('Physics',this)">Physics</div>
+        <div class="chip" onclick="setBrowseCat('Engineering',this)">Engineering</div>
+      </div>
+      <div class="grid-3" id="browse-grid"></div>
+    </div>
+
+    <div class="tab-panel" id="learn-live">
+      <div id="live-sessions"></div>
+    </div>
+
+    <div class="tab-panel" id="learn-enroll">
+      <div class="panel" style="max-width:450px">
+        <div class="panel-title">📋 Enroll in a New Course</div>
+        <div class="form-group"><label class="lbl">Course Name *</label><input class="fi" id="en-name" placeholder="e.g. Web Development Bootcamp"></div>
+        <div class="form-group"><label class="lbl">Category</label>
+          <select class="fi" id="en-cat"><option value="CS">Computer Science</option><option value="Math">Mathematics</option><option value="Physics">Physics</option><option value="Engineering">Engineering</option></select>
+        </div>
+        <div class="form-group"><label class="lbl">Instructor *</label><input class="fi" id="en-inst" placeholder="Instructor name"></div>
+        <div class="form-group"><label class="lbl">Total Lectures</label><input class="fi" type="number" id="en-lec" placeholder="30" min="1" max="200"></div>
+        <button class="btn btn-primary" onclick="enrollCourse()">Enroll Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ STUDENTS ═══════════════════════ -->
+<div class="page" id="pg-students">
+  <div class="sect">
+    <div class="sect-hdr">
+      <span class="sect-tag">Module B</span>
+      <h2 class="sect-title">Student Management System</h2>
+      <p class="sect-desc">Centralized academic management with role-based dashboards.</p>
+    </div>
+    <div class="stat-cards">
+      <div class="sc" style="border-color:rgba(0,229,255,.2)"><div class="sc-num" style="color:var(--accent)" id="sc-total">0</div><div class="sc-lbl">Total Students</div><div class="sc-chg up" id="sc-new"></div></div>
+      <div class="sc" style="border-color:rgba(124,58,237,.2)"><div class="sc-num" style="color:var(--accent2)" id="sc-att">0%</div><div class="sc-lbl">Avg. Attendance</div><div class="sc-chg up">↑ +2.1% vs last month</div></div>
+      <div class="sc" style="border-color:rgba(16,185,129,.2)"><div class="sc-num" style="color:var(--accent4)" id="sc-gpa">0</div><div class="sc-lbl">Avg. CGPA</div><div class="sc-chg up">↑ Improving</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('stu','list',this)">Records</button>
+      <button class="tab"        onclick="switchTab('stu','add',this)">+ Add Student</button>
+      <button class="tab"        onclick="switchTab('stu','notices',this)">📢 Notices</button>
+    </div>
+
+    <div class="tab-panel active" id="stu-list">
+      <div class="search">
+        <span style="color:var(--muted)">🔍</span>
+        <input id="stu-search" placeholder="Search name, roll no, branch…" oninput="renderStudents()">
+        <select class="fi" id="stu-filter" onchange="renderStudents()" style="width:auto;padding:5px 10px;font-size:.75rem">
+          <option value="">All</option><option>Active</option><option>Warning</option><option>At Risk</option><option>Honors</option>
+        </select>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head">
+          <div class="tbl-title">📋 Student Records</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="sortByGPA()">Sort by CGPA</button>
+            <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+          </div>
+        </div>
+        <table><thead><tr><th>Name</th><th>Roll No.</th><th>Branch</th><th>Attendance</th><th>CGPA</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="stu-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="stu-add">
+      <div class="panel" style="max-width:540px">
+        <div class="panel-title">➕ Add New Student</div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Full Name *</label><input class="fi" id="sa-name" placeholder="Student full name"></div>
+          <div class="form-group"><label class="lbl">Roll Number *</label><input class="fi" id="sa-roll" placeholder="e.g. CS2026001"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Branch</label>
+            <select class="fi" id="sa-branch"><option>Computer Science</option><option>Electronics</option><option>Mechanical</option><option>Civil Engineering</option><option>Information Tech.</option></select>
+          </div>
+          <div class="form-group"><label class="lbl">Email *</label><input class="fi" id="sa-email" type="email" placeholder="student@college.edu"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Attendance %</label><input class="fi" id="sa-att" type="number" placeholder="0–100" min="0" max="100"></div>
+          <div class="form-group"><label class="lbl">CGPA</label><input class="fi" id="sa-gpa" type="number" placeholder="0–10" min="0" max="10" step="0.1"></div>
+        </div>
+        <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="stu-notices">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">📢 Post Notice</div>
+          <div class="form-group"><label class="lbl">Title *</label><input class="fi" id="nt-title" placeholder="Notice title"></div>
+          <div class="form-group"><label class="lbl">Message *</label><textarea class="fi" id="nt-msg" placeholder="Notice message…"></textarea></div>
+          <div class="form-group"><label class="lbl">Priority</label>
+            <select class="fi" id="nt-pri"><option>Normal</option><option>Important</option><option>Urgent</option></select>
+          </div>
+          <button class="btn btn-primary" onclick="postNotice()">Post Notice</button>
+        </div>
+        <div>
+          <div class="panel-title" style="font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:12px">📋 Recent Notices</div>
+          <div id="notices-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ EXAMS ═══════════════════════ -->
+<div class="page" id="pg-exams">
+  <div class="sect">
+    <div class="sect-hdr">
+      <span class="sect-tag">Module C</span>
+      <h2 class="sect-title">Online Examination System</h2>
+      <p class="sect-desc">Secure timed exams with auto-evaluation and anti-cheating.</p>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('ex','take',this)">Take Exam</button>
+      <button class="tab"        onclick="switchTab('ex','results',this)">My Results</button>
+      <button class="tab"        onclick="switchTab('ex','create',this)">Create Exam</button>
+    </div>
+
+    <div class="tab-panel active" id="ex-take">
+      <div id="ex-list"><div class="grid-3" id="exam-cards"></div></div>
+      <div id="ex-active" style="display:none">
+        <div class="exam-wrap">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted)" id="ex-subj-lbl"></div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem" id="ex-title-lbl"></div>
+            </div>
+            <div class="timer" id="ex-timer">00:00</div>
+          </div>
+          <div class="ex-prog" id="ex-progress"></div>
+          <div class="exam-card">
+            <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:10px" id="q-label"></div>
+            <div class="q-text" id="q-text"></div>
+            <div class="opts" id="q-opts"></div>
+            <div id="q-feedback" style="display:none;margin-top:13px;padding:11px 15px;border-radius:10px;font-size:.83rem"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+              <span style="font-size:.72rem;color:var(--muted)">🔒 Secure · Tab switching monitored</span>
+              <div style="display:flex;gap:9px">
+                <button class="btn btn-ghost btn-sm" id="btn-prev" onclick="prevQ()">← Prev</button>
+                <button class="btn btn-primary btn-sm" id="btn-next" onclick="nextQ()">Next →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="ex-result" style="display:none">
+        <div class="exam-wrap">
+          <div class="panel" style="text-align:center;padding:32px">
+            <div style="font-size:3rem;margin-bottom:14px" id="res-emoji"></div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;margin-bottom:7px" id="res-score"></div>
+            <div style="color:var(--muted);margin-bottom:20px" id="res-msg"></div>
+            <div id="res-bars" style="text-align:left;max-width:340px;margin:0 auto 22px"></div>
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+              <button class="btn btn-primary" onclick="resetExam()">Back to Exams</button>
+              <button class="btn btn-ghost"   onclick="switchTab('ex','results',document.querySelector('#pg-exams .tab:nth-child(2)'));renderResults()">View All Results</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="ex-results">
+      <div class="tbl-wrap">
+        <div class="tbl-head"><div class="tbl-title">📊 My Exam History</div></div>
+        <table><thead><tr><th>Exam</th><th>Date</th><th>Score</th><th>Percentage</th><th>Grade</th><th>Result</th></tr></thead>
+        <tbody id="results-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="ex-create">
+      <div class="panel" style="max-width:560px">
+        <div class="panel-title">📝 Create Exam</div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Exam Title *</label><input class="fi" id="ce-title" placeholder="Mid Term — Data Structures"></div>
+          <div class="form-group"><label class="lbl">Subject Code</label><input class="fi" id="ce-subj" placeholder="CS301"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Duration (min)</label><input class="fi" type="number" id="ce-dur" placeholder="30" min="5"></div>
+          <div class="form-group"><label class="lbl">Total Marks</label><input class="fi" type="number" id="ce-marks" placeholder="50"></div>
+        </div>
+        <div id="ce-qs-wrap"></div>
+        <button class="btn btn-ghost btn-sm" onclick="addCEQ()" style="margin-bottom:14px">+ Add Question</button><br>
+        <button class="btn btn-primary" onclick="createExam()">Create Exam</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ATTENDANCE ═══════════════════════ -->
+<div class="page" id="pg-attend">
+  <div class="sect">
+    <div class="sect-hdr">
+      <span class="sect-tag">Module D</span>
+      <h2 class="sect-title">Attendance Tracking System</h2>
+      <p class="sect-desc">QR/mobile-based real-time attendance with analytics dashboard.</p>
+    </div>
+    <div class="stat-cards">
+      <div class="sc" style="border-color:rgba(16,185,129,.2)"><div class="sc-num" style="color:var(--accent4)" id="att-pct">90%</div><div class="sc-lbl">Your Attendance</div><div class="sc-chg up" id="att-note">✓ Above required 75%</div></div>
+      <div class="sc" style="border-color:rgba(0,229,255,.2)"><div class="sc-num" style="color:var(--accent)" id="att-present">18</div><div class="sc-lbl">Days Present</div><div class="sc-chg">Feb 2026</div></div>
+      <div class="sc" style="border-color:rgba(244,63,94,.2)"><div class="sc-num" style="color:var(--accent5)" id="att-absent">2</div><div class="sc-lbl">Days Absent/Late</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('att','qr',this)">📱 QR Scanner</button>
+      <button class="tab"        onclick="switchTab('att','cal',this)">📅 Calendar</button>
+      <button class="tab"        onclick="switchTab('att','log',this)">📋 Session Log</button>
+      <button class="tab"        onclick="switchTab('att','manual',this)">✏️ Manual</button>
+    </div>
+
+    <div class="tab-panel active" id="att-qr">
+      <div style="text-align:center;padding:16px 0">
+        <div class="qr-wrap" style="margin-bottom:18px"><canvas id="qr-canvas" width="188" height="188"></canvas></div>
+        <div style="font-family:'DM Mono',monospace;font-size:.8rem;color:var(--muted);margin-bottom:7px">CS301 · Advanced Algorithms · 10:00 AM</div>
+        <div class="live-dot" style="justify-content:center;margin-bottom:18px" id="qr-count-lbl">137 / 148 marked present</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-success" onclick="markPresent()">✓ Mark Me Present</button>
+          <button class="btn btn-ghost"   onclick="refreshQR()">🔄 Refresh QR</button>
+        </div>
+        <div id="qr-fb" style="margin-top:14px;font-size:.86rem"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="att-cal">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">📅 February 2026</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:7px">
+            <div class="day-hdr">Su</div><div class="day-hdr">Mo</div><div class="day-hdr">Tu</div>
+            <div class="day-hdr">We</div><div class="day-hdr">Th</div><div class="day-hdr">Fr</div><div class="day-hdr">Sa</div>
+          </div>
+          <div class="att-grid" id="att-calendar"></div>
+          <div style="display:flex;gap:12px;margin-top:12px;font-size:.72rem;flex-wrap:wrap">
+            <span style="color:var(--accent4)">● Present</span>
+            <span style="color:var(--accent5)">● Absent</span>
+            <span style="color:var(--accent3)">● Late</span>
+            <span style="color:var(--accent)">● Today</span>
+          </div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:14px">
+            <div class="panel-title">📊 Monthly Overview</div>
+            <div id="att-overview"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">📚 Subject-wise %</div>
+            <div id="att-subjects"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="att-log">
+      <div class="tbl-wrap">
+        <div class="tbl-head"><div class="tbl-title">🕐 Today's Sessions</div><span class="live-dot">Live</span></div>
+        <table><thead><tr><th>Subject</th><th>Time</th><th>Faculty</th><th>Present</th><th>Absent</th><th>%</th><th>Status</th></tr></thead>
+        <tbody id="sess-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="att-manual">
+      <div class="panel" style="max-width:450px">
+        <div class="panel-title">✏️ Manual Attendance</div>
+        <div class="form-group"><label class="lbl">Subject</label>
+          <select class="fi" id="man-sub"><option>Advanced Algorithms</option><option>Mathematics III</option><option>Software Engineering</option><option>Computer Networks</option></select>
+        </div>
+        <div class="form-group"><label class="lbl">Date *</label><input class="fi" type="date" id="man-date"></div>
+        <div class="form-group"><label class="lbl">Status</label>
+          <select class="fi" id="man-status"><option>Present</option><option>Absent</option><option>Late</option></select>
+        </div>
+        <div class="form-group"><label class="lbl">Reason (optional)</label><input class="fi" id="man-reason" placeholder="Medical, emergency, etc."></div>
+        <button class="btn btn-primary" onclick="submitManual()">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ INTERNSHIPS ═══════════════════════ -->
+<div class="page" id="pg-intern">
+  <div class="sect">
+    <div class="sect-hdr">
+      <span class="sect-tag">Module E</span>
+      <h2 class="sect-title">Internship & Training Portal</h2>
+      <p class="sect-desc">Connect with internships, training programs, and industry certifications.</p>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('int','browse',this)">Browse</button>
+      <button class="tab"        onclick="switchTab('int','applied',this)">My Applications</button>
+      <button class="tab"        onclick="switchTab('int','training',this)">Training</button>
+      <button class="tab"        onclick="switchTab('int','post',this)">+ Post Listing</button>
+    </div>
+
+    <div class="tab-panel active" id="int-browse">
+      <div class="search"><span style="color:var(--muted)">🔍</span><input id="int-search" placeholder="Search roles, companies, skills…" oninput="renderInternships()"></div>
+      <div class="chips" id="int-chips">
+        <div class="chip active" onclick="setIntCat('All',this)">All</div>
+        <div class="chip" onclick="setIntCat('Remote',this)">Remote</div>
+        <div class="chip" onclick="setIntCat('On-Site',this)">On-Site</div>
+        <div class="chip" onclick="setIntCat('Hybrid',this)">Hybrid</div>
+        <div class="chip" onclick="setIntCat('Technology',this)">Technology</div>
+        <div class="chip" onclick="setIntCat('Finance',this)">Finance</div>
+      </div>
+      <div id="int-list"></div>
+    </div>
+
+    <div class="tab-panel" id="int-applied">
+      <div id="applied-list"></div>
+    </div>
+
+    <div class="tab-panel" id="int-training">
+      <div class="grid-3" id="training-grid"></div>
+    </div>
+
+    <div class="tab-panel" id="int-post">
+      <div class="panel" style="max-width:540px">
+        <div class="panel-title">📤 Post Internship Listing</div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Role Title *</label><input class="fi" id="pi-role" placeholder="Software Engineering Intern"></div>
+          <div class="form-group"><label class="lbl">Company *</label><input class="fi" id="pi-co" placeholder="Company name"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Location *</label><input class="fi" id="pi-loc" placeholder="City or Remote"></div>
+          <div class="form-group"><label class="lbl">Stipend (₹/month)</label><input class="fi" type="number" id="pi-pay" placeholder="20000"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Duration</label><input class="fi" id="pi-dur" placeholder="3 months"></div>
+          <div class="form-group"><label class="lbl">Deadline</label><input class="fi" type="date" id="pi-deadline"></div>
+        </div>
+        <div class="form-group"><label class="lbl">Skills (comma-separated)</label><input class="fi" id="pi-skills" placeholder="React, Node.js, AWS"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Type</label>
+            <select class="fi" id="pi-type"><option>Remote</option><option>On-Site</option><option>Hybrid</option></select>
+          </div>
+          <div class="form-group"><label class="lbl">Category</label>
+            <select class="fi" id="pi-cat"><option>Technology</option><option>Finance</option><option>Design</option><option>Marketing</option></select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="postInternship()">Post Listing</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ LIBRARY ═══════════════════════ -->
+<div class="page" id="pg-library">
+  <div class="sect">
+    <div class="sect-hdr">
+      <span class="sect-tag">Module F</span>
+      <h2 class="sect-title">Digital Library System</h2>
+      <p class="sect-desc">Manage physical and digital resources with secure access control.</p>
+    </div>
+    <div class="stat-cards">
+      <div class="sc" style="border-color:rgba(59,130,246,.2)"><div class="sc-num" style="color:var(--accent6)" id="lib-total">50,240</div><div class="sc-lbl">Total Books</div><div class="sc-chg">📖 12K digital</div></div>
+      <div class="sc" style="border-color:rgba(16,185,129,.2)"><div class="sc-num" style="color:var(--accent4)" id="lib-issued">1,842</div><div class="sc-lbl">Currently Issued</div><div class="sc-chg up">↑ 48 today</div></div>
+      <div class="sc" style="border-color:rgba(244,63,94,.2)"><div class="sc-num" style="color:var(--accent5)">23</div><div class="sc-lbl">Overdue</div><div class="sc-chg dn">⚠ Action needed</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('lib','catalog',this)">📚 Catalog</button>
+      <button class="tab"        onclick="switchTab('lib','mybooks',this)">My Books</button>
+      <button class="tab"        onclick="switchTab('lib','ebooks',this)">📱 E-Books</button>
+      <button class="tab"        onclick="switchTab('lib','add',this)">+ Add Book</button>
+    </div>
+
+    <div class="tab-panel active" id="lib-catalog">
+      <div class="search"><span style="color:var(--muted)">🔍</span><input id="book-search" placeholder="Search title, author, ISBN…" oninput="renderBooks()"></div>
+      <div class="chips" id="book-chips">
+        <div class="chip active" onclick="setBookCat('All',this)">All</div>
+        <div class="chip" onclick="setBookCat('CS',this)">Computer Science</div>
+        <div class="chip" onclick="setBookCat('Math',this)">Mathematics</div>
+        <div class="chip" onclick="setBookCat('Physics',this)">Physics</div>
+        <div class="chip" onclick="setBookCat('Engineering',this)">Engineering</div>
+      </div>
+      <div class="book-grid" id="book-grid"></div>
+    </div>
+
+    <div class="tab-panel" id="lib-mybooks">
+      <div class="tbl-wrap">
+        <div class="tbl-head"><div class="tbl-title">📖 My Issued Books</div></div>
+        <table><thead><tr><th>Title</th><th>Author</th><th>Issued On</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="mybooks-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="lib-ebooks">
+      <div class="book-grid" id="ebook-grid"></div>
+    </div>
+
+    <div class="tab-panel" id="lib-add">
+      <div class="panel" style="max-width:500px">
+        <div class="panel-title">➕ Add New Book</div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Title *</label><input class="fi" id="ab-title" placeholder="Book title"></div>
+          <div class="form-group"><label class="lbl">Author(s) *</label><input class="fi" id="ab-author" placeholder="Author names"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">ISBN</label><input class="fi" id="ab-isbn" placeholder="978-…"></div>
+          <div class="form-group"><label class="lbl">Category</label>
+            <select class="fi" id="ab-cat"><option>CS</option><option>Math</option><option>Physics</option><option>Engineering</option><option>Literature</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="lbl">Copies</label><input class="fi" type="number" id="ab-copies" placeholder="5" min="1"></div>
+          <div class="form-group"><label class="lbl">Type</label>
+            <select class="fi" id="ab-type"><option>Physical</option><option>E-Book</option><option>Both</option></select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="addBook()">Add to Library</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="handleModalBgClick(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div id="toasts"></div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const DATA = {
+  students: [
+    {name:'Aarav Mehta',   roll:'CS2021041', branch:'Computer Science', att:94, gpa:8.9, email:'aarav@college.edu'},
+    {name:'Priya Sharma',  roll:'EC2021019', branch:'Electronics',      att:91, gpa:9.1, email:'priya@college.edu'},
+    {name:'Rohan Verma',   roll:'ME2021056', branch:'Mechanical',       att:72, gpa:6.8, email:'rohan@college.edu'},
+    {name:'Sneha Iyer',    roll:'CI2021033', branch:'Civil Engineering', att:88, gpa:7.9, email:'sneha@college.edu'},
+    {name:'Karan Gupta',   roll:'CS2021072', branch:'Computer Science', att:61, gpa:5.4, email:'karan@college.edu'},
+    {name:'Ananya Patel',  roll:'IT2021088', branch:'Information Tech.', att:97, gpa:9.6, email:'ananya@college.edu'},
+  ],
+  courses: [
+    {name:'Advanced Data Structures & Algorithms', cat:'CS',          inst:'Dr. Priya Sharma',   lec:42, hrs:'18h 30m', prog:72,  emoji:'⚛️', ic:'ic-a'},
+    {name:'Machine Learning Fundamentals',         cat:'CS',          inst:'Prof. Rajesh Kumar',  lec:38, hrs:'16h 00m', prog:35,  emoji:'🤖', ic:'ic-e'},
+    {name:'Database Management Systems',           cat:'CS',          inst:'Dr. Anita Patel',     lec:36, hrs:'14h 20m', prog:100, emoji:'🗄️', ic:'ic-b'},
+    {name:'Computer Networks & Protocols',         cat:'CS',          inst:'Prof. Suresh Nair',   lec:28, hrs:'11h 45m', prog:18,  emoji:'📡', ic:'ic-c'},
+    {name:'Artificial Intelligence',              cat:'CS',          inst:'Dr. Meera Iyer',      lec:50, hrs:'22h 10m', prog:0,   emoji:'🧠', ic:'ic-f'},
+    {name:'Linear Algebra',                        cat:'Math',        inst:'Dr. Ramesh Kumar',    lec:30, hrs:'12h 00m', prog:55,  emoji:'📐', ic:'ic-d'},
+    {name:'Quantum Mechanics',                     cat:'Physics',     inst:'Prof. N. Bose',       lec:44, hrs:'20h 00m', prog:0,   emoji:'⚡', ic:'ic-c'},
+    {name:'Structural Engineering',                cat:'Engineering', inst:'Dr. A. Singh',        lec:32, hrs:'13h 30m', prog:20,  emoji:'🏗️', ic:'ic-a'},
+  ],
+  exams: [
+    {id:1, title:'Mid Term — Data Structures', subj:'CS301', dur:25, marks:50, ic:'ic-c', qs:[
+      {q:'Which data structure uses LIFO ordering?',                    opts:['Queue','Stack','Linked List','Hash Table'],    ans:1},
+      {q:'Time complexity of binary search:',                           opts:['O(n)','O(n²)','O(log n)','O(1)'],             ans:2},
+      {q:'Which traversal visits root node first?',                     opts:['In-order','Post-order','Pre-order','Level-order'], ans:2},
+      {q:'Stack overflow happens when:',                                opts:['Queue is empty','Stack is full','Index out of bounds','Null pointer'], ans:1},
+      {q:'A min-heap guarantees:',                                      opts:['Parent > Children','Parent ≤ Children','All nodes equal','Random order'], ans:1},
+    ]},
+    {id:2, title:'Unit Test — Machine Learning', subj:'CS401', dur:15, marks:30, ic:'ic-e', qs:[
+      {q:'Supervised learning requires:',   opts:['Unlabeled data','Labeled training data','No data','Clustered data'],       ans:1},
+      {q:'Overfitting means the model:',    opts:['Performs well on training but poorly on test','Performs well on both','Fails to train','Converges too fast'], ans:0},
+      {q:'A classification algorithm:',     opts:['K-Means','Linear Regression','Decision Tree','PCA'],                      ans:2},
+    ]},
+    {id:3, title:'Quiz — Database Systems', subj:'CS302', dur:12, marks:20, ic:'ic-b', qs:[
+      {q:'SQL stands for:',                opts:['Simple Query Language','Structured Query Language','Standard Query Logic','System Query Language'], ans:1},
+      {q:'Primary key must be:',            opts:['Nullable','Unique and Not Null','Duplicatable','Optional'],                ans:1},
+      {q:'3NF eliminates:',                 opts:['Repeating groups','Partial dependencies','Transitive dependencies','All anomalies'], ans:2},
+    ]},
+  ],
+  examResults: [],
+  notices: [
+    {title:'Mid-Semester Exams Schedule',  msg:'Exams begin March 10, 2026. Check your timetable.',  pri:'Important', time:'2h ago'},
+    {title:'Campus Maintenance Notice',    msg:'Lab B closed Feb 25–26 for equipment maintenance.',    pri:'Normal',    time:'1d ago'},
+  ],
+  internships: [
+    {role:'Software Engineering Intern',   co:'TechNova Solutions',   loc:'Bangalore',  type:'Remote',  pay:25000, dur:'6 months', dl:'2026-03-15', skills:['React','Node.js','AWS'],         cat:'Technology', emoji:'🔷', applied:false},
+    {role:'Data Science Intern',           co:'AnalyticsIQ',          loc:'Mumbai',     type:'Hybrid',  pay:20000, dur:'3 months', dl:'2026-02-28', skills:['Python','ML','SQL'],             cat:'Technology', emoji:'💛', applied:false},
+    {role:'Cloud Infrastructure Trainee',  co:'CloudEdge Systems',    loc:'Hyderabad',  type:'On-Site', pay:18000, dur:'4 months', dl:'2026-03-30', skills:['AWS','Docker','Linux'],          cat:'Technology', emoji:'🟥', applied:false},
+    {role:'UI/UX Design Intern',           co:'PixelCraft Studio',    loc:'Delhi',      type:'Remote',  pay:15000, dur:'2 months', dl:'2026-04-10', skills:['Figma','Design Systems'],       cat:'Design',     emoji:'🎨', applied:false},
+    {role:'Finance Analyst Intern',        co:'MoneyWise Capital',    loc:'Mumbai',     type:'On-Site', pay:22000, dur:'3 months', dl:'2026-03-20', skills:['Excel','Financial Modeling'],   cat:'Finance',    emoji:'💹', applied:false},
+  ],
+  training: [
+    {name:'Full Stack Web Development', provider:'Google',           dur:'3 months', emoji:'🌐', ic:'ic-a'},
+    {name:'Data Science Professional',  provider:'IBM',              dur:'4 months', emoji:'📊', ic:'ic-b'},
+    {name:'AWS Cloud Practitioner',     provider:'Amazon',           dur:'2 months', emoji:'☁️', ic:'ic-c'},
+    {name:'Cybersecurity Fundamentals', provider:'Microsoft',        dur:'6 weeks',  emoji:'🔐', ic:'ic-e'},
+    {name:'ML Specialization',          provider:'Coursera/Stanford',dur:'3 months', emoji:'🤖', ic:'ic-f'},
+    {name:'UI/UX Design Bootcamp',      provider:'Adobe',            dur:'2 months', emoji:'🎨', ic:'ic-d'},
+  ],
+  books: [
+    {title:'Introduction to Algorithms',    author:'Cormen, Leiserson, Rivest', isbn:'978-0262033848', cat:'CS',          copies:5, avail:3, type:'Physical', emoji:'📘', bg:'#1e3a5f,#2d6a4f', myIssued:false},
+    {title:'Operating System Concepts',     author:'Silberschatz, Galvin',      isbn:'978-1118063330', cat:'CS',          copies:3, avail:0, type:'Physical', emoji:'📗', bg:'#4a1942,#831843', myIssued:false},
+    {title:'Computer Networks',             author:'Andrew Tanenbaum',          isbn:'978-0132126953', cat:'CS',          copies:4, avail:2, type:'Physical', emoji:'📙', bg:'#1a2e5e,#163153', myIssued:false},
+    {title:'Database System Concepts',      author:'Korth, Sudarshan',          isbn:'978-0073523323', cat:'CS',          copies:6, avail:4, type:'Physical', emoji:'📕', bg:'#3b1f08,#7c3a00', myIssued:false},
+    {title:'AI: A Modern Approach',         author:'Russell & Norvig',          isbn:'978-0137903955', cat:'CS',          copies:2, avail:2, type:'E-Book',  emoji:'📔', bg:'#0d3321,#064e3b', myIssued:false},
+    {title:'Deep Learning',                 author:'Goodfellow, Bengio',        isbn:'978-0262035613', cat:'CS',          copies:3, avail:0, type:'E-Book',  emoji:'📓', bg:'#1e1b4b,#312e81', myIssued:false},
+    {title:'Linear Algebra Done Right',     author:'Sheldon Axler',             isbn:'978-3319110790', cat:'Math',        copies:5, avail:3, type:'Physical', emoji:'📒', bg:'#134e4a,#0f766e', myIssued:false},
+    {title:'Calculus: Early Transcendentals',author:'James Stewart',            isbn:'978-1285741550', cat:'Math',        copies:8, avail:5, type:'Physical', emoji:'📗', bg:'#365314,#4d7c0f', myIssued:false},
+    {title:'University Physics',            author:'Young & Freedman',          isbn:'978-0133969290', cat:'Physics',     copies:6, avail:4, type:'Physical', emoji:'⚡', bg:'#1e3a5f,#1e40af', myIssued:false},
+    {title:'Structural Analysis',           author:'R.C. Hibbeler',             isbn:'978-0134610672', cat:'Engineering', copies:4, avail:2, type:'Physical', emoji:'🏗️', bg:'#451a03,#92400e', myIssued:false},
+  ],
+  myBooks: [],
+  attendance: {3:'present',4:'present',5:'present',6:'present',7:'present',10:'present',11:'absent',12:'present',13:'present',14:'present',17:'late',18:'present',19:'present',20:'present',21:'present',22:'present'},
+  sessions:[
+    {sub:'Mathematics III',      time:'08:00', fac:'Dr. Ramesh',    present:142, absent:6,  status:'Done'},
+    {sub:'Advanced Algorithms',  time:'10:00', fac:'Dr. Priya S.',  present:137, absent:11, status:'Live'},
+    {sub:'Software Engineering', time:'11:30', fac:'Prof. Kumar',   present:null,absent:null,status:'Upcoming'},
+    {sub:'Computer Networks',    time:'14:00', fac:'Dr. Nair',      present:null,absent:null,status:'Upcoming'},
+  ],
+};
+
+// Exam state
+let EX = { exam:null, qi:0, answers:[], interval:null };
+// Various filters
+let browseCat = 'All', intCat = 'All', bookCat = 'All';
+let stuSortAsc = false;
+let qrMarked = false, qrCount = 137;
+let ceQN = 0;
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function goPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const pg = document.getElementById('pg-' + name);
+  if (pg) pg.classList.add('show');
+  const btn = document.querySelector('[data-pg="' + name + '"]');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+  // Refresh data for the page
+  const refresh = {
+    learning:   () => { renderMyCourses(); renderBrowseGrid(); renderLiveSessions(); },
+    students:   () => { renderStudents(); renderNotices(); updateStudentStats(); },
+    exams:      () => { renderExamCards(); renderResults(); },
+    attend:     () => { renderCalendar(); renderSessions(); updateAttStats(); setTimeout(drawQR, 80); },
+    intern:     () => { renderInternships(); renderApplied(); renderTraining(); },
+    library:    () => { renderBooks(); renderEbooks(); renderMyBooks(); },
+  };
+  if (refresh[name]) refresh[name]();
+}
+
+function switchTab(group, id, btn) {
+  const prefix = group + '-';
+  // Hide all panels for this group
+  document.querySelectorAll('[id^="' + prefix + '"]').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById(prefix + id);
+  if (target) target.classList.add('active');
+  // Update tab buttons — walk up to find .tabs sibling
+  if (btn) {
+    btn.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════
+function toast(msg, type = 'info') {
+  const icons = { ok:'✓', err:'✕', info:'ℹ' };
+  const colors = { ok:'var(--accent4)', err:'var(--accent5)', info:'var(--accent)' };
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = '<span style="color:' + colors[type] + ';font-weight:700">' + icons[type] + '</span><span>' + msg + '</span>';
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => {
+    el.style.transition = 'all .25s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(110%)';
+    setTimeout(() => el.remove(), 280);
+  }, 3400);
+}
+
+function openModal(html) {
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+function handleModalBgClick(e) { if (e.target === document.getElementById('modal-bg')) closeModal(); }
+
+function animCount(id, end, suffix, ms) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  ms = ms || 1400;
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / ms, 1);
+    el.textContent = Math.floor(p * end).toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = end.toLocaleString() + suffix;
+  }
+  requestAnimationFrame(step);
+}
+
+function stuStatus(att) {
+  return att >= 90 ? 'Honors' : att >= 75 ? 'Active' : att >= 60 ? 'Warning' : 'At Risk';
+}
+
+function today() { return new Date().toISOString().split('T')[0]; }
+
+// ═══════════════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════════════
+function initHome() {
+  animCount('h-students', 12000, '+');
+  animCount('h-courses',  480,   '+', 1100);
+  animCount('h-pass',     96,    '%', 900);
+}
+
+// ═══════════════════════════════════════════════════════
+// MODULE A — LEARNING
+// ═══════════════════════════════════════════════════════
+function renderMyCourses() {
+  const el = document.getElementById('my-courses');
+  if (!el) return;
+  const q = (document.getElementById('cs-search') || {}).value || '';
+  const lc = q.toLowerCase();
+  const list = DATA.courses.filter(c =>
+    !lc || c.name.toLowerCase().includes(lc) || c.inst.toLowerCase().includes(lc)
+  );
+  if (!list.length) {
+    el.innerHTML = '<div style="color:var(--muted);padding:20px 0;text-align:center">No courses match your search.</div>';
+    return;
+  }
+  el.innerHTML = list.map(c => {
+    const idx = DATA.courses.indexOf(c);
+    const pct = c.prog;
+    const col = pct === 100 ? 'var(--accent4)' : pct === 0 ? 'var(--muted)' : 'var(--accent)';
+    const label = pct === 100 ? '✓ Done' : pct === 0 ? 'Start' : pct + '%';
+    return `<div class="course-row" onclick="viewCourse(${idx})">
+      <div class="course-icon ${c.ic}">${c.emoji}</div>
+      <div style="flex:1">
+        <div class="course-name">${c.name}</div>
+        <div class="course-meta">${c.inst} · ${c.lec} lectures · ${c.hrs}</div>
+        <div class="pbar"><div class="pfill${pct===100?' done':''}" style="width:${pct}%"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;min-width:66px">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:${col}">${label}</div>
+        <div style="font-size:.68rem;color:var(--muted);margin-top:2px">${pct===100?'Completed':pct===0?'Not Started':'In Progress'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function viewCourse(idx) {
+  const c = DATA.courses[idx];
+  openModal(`
+    <div class="modal-title">${c.emoji} ${c.name}</div>
+    <div class="modal-sub">${c.inst} · ${c.lec} lectures · ${c.hrs}</div>
+    <div style="margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px"><span style="color:var(--muted)">Progress</span><strong>${c.prog}%</strong></div>
+      <div class="pbar" style="height:8px"><div class="pfill${c.prog===100?' done':''}" style="width:${c.prog}%"></div></div>
+    </div>
+    ${c.prog === 100
+      ? '<div style="padding:12px 16px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:var(--accent4)">🏆 Course Completed! Certificate earned.</div>'
+      : `<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" onclick="continueLesson(${idx})">▶ Continue Learning</button><button class="btn btn-ghost" onclick="closeModal()">Close</button></div>`}
+  `);
+}
+
+function continueLesson(idx) {
+  closeModal();
+  const c = DATA.courses[idx];
+  c.prog = Math.min(100, c.prog + 8);
+  if (c.prog >= 100) { c.prog = 100; toast('🏆 Course completed! Certificate earned.', 'ok'); }
+  else toast('Progress updated: ' + c.prog + '%', 'info');
+  renderMyCourses();
+}
+
+function renderBrowseGrid() {
+  const el = document.getElementById('browse-grid');
+  if (!el) return;
+  const list = browseCat === 'All' ? DATA.courses : DATA.courses.filter(c => c.cat === browseCat);
+  el.innerHTML = list.map(c => {
+    const idx = DATA.courses.indexOf(c);
+    return `<div class="card">
+      <div class="card-icon ${c.ic}">${c.emoji}</div>
+      <div class="card-title">${c.name}</div>
+      <div class="card-desc" style="margin-bottom:14px">${c.inst} · ${c.lec} lectures · ${c.hrs}</div>
+      <button class="btn ${c.prog > 0 ? 'btn-ghost' : 'btn-primary'} btn-sm" onclick="quickEnroll(${idx})">${c.prog > 0 ? 'Resume' : 'Enroll Free'}</button>
+    </div>`;
+  }).join('');
+}
+
+function setBrowseCat(cat, el) {
+  browseCat = cat;
+  document.querySelectorAll('#browse-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderBrowseGrid();
+}
+
+function quickEnroll(idx) {
+  if (DATA.courses[idx].prog === 0) DATA.courses[idx].prog = 1;
+  toast('Enrolled in "' + DATA.courses[idx].name + '"!', 'ok');
+  renderBrowseGrid();
+  renderMyCourses();
+}
+
+function renderLiveSessions() {
+  const el = document.getElementById('live-sessions');
+  if (!el) return;
+  const sessions = [
+    { emoji:'🤖', name:'Machine Learning Fundamentals', inst:'Prof. Rajesh Kumar', watching:241, ic:'ic-e' },
+    { emoji:'🛡️', name:'Cybersecurity Essentials',      inst:'Dr. Vikram Rao',     watching:93,  ic:'ic-a' },
+    { emoji:'☁️', name:'Cloud Computing & DevOps',      inst:'Dr. Renu Shah',      watching:58,  ic:'ic-c' },
+  ];
+  el.innerHTML = sessions.map(s => `
+    <div class="course-row" style="margin-bottom:10px">
+      <div class="course-icon ${s.ic}" style="position:relative">${s.emoji}
+        <span style="position:absolute;bottom:-7px;right:-9px;background:var(--card);padding:2px 5px;border-radius:8px;border:1px solid rgba(244,63,94,.3);font-size:.58rem;color:var(--accent5);font-weight:700">LIVE</span>
+      </div>
+      <div style="flex:1">
+        <div class="course-name">${s.name}</div>
+        <div class="course-meta">${s.inst} · <span class="live-dot">${s.watching} watching</span></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="toast('Joining live session…','info')">Join</button>
+    </div>`).join('');
+}
+
+function enrollCourse() {
+  const name = document.getElementById('en-name').value.trim();
+  const cat  = document.getElementById('en-cat').value;
+  const inst = document.getElementById('en-inst').value.trim();
+  const lec  = parseInt(document.getElementById('en-lec').value) || 30;
+  if (!name || !inst) { toast('Please fill Name and Instructor.', 'err'); return; }
+  const em = { CS:'💻', Math:'📐', Physics:'⚡', Engineering:'🏗️' };
+  DATA.courses.unshift({ name, cat, inst, lec, hrs:'0h', prog:0, emoji: em[cat] || '📚', ic:'ic-a' });
+  toast('Enrolled in "' + name + '"!', 'ok');
+  ['en-name','en-inst','en-lec'].forEach(id => document.getElementById(id).value = '');
+  renderMyCourses();
+  renderBrowseGrid();
+}
+
+// ═══════════════════════════════════════════════════════
+// MODULE B — STUDENTS
+// ═══════════════════════════════════════════════════════
+function updateStudentStats() {
+  const total = DATA.students.length;
+  const avgAtt = total ? Math.round(DATA.students.reduce((s,x) => s+x.att, 0) / total) : 0;
+  const avgGPA = total ? (DATA.students.reduce((s,x) => s+x.gpa, 0) / total).toFixed(1) : '0';
+  const el1 = document.getElementById('sc-total');
+  const el2 = document.getElementById('sc-att');
+  const el3 = document.getElementById('sc-gpa');
+  const el4 = document.getElementById('sc-new');
+  if (el1) el1.textContent = total.toLocaleString();
+  if (el2) el2.textContent = avgAtt + '%';
+  if (el3) el3.textContent = avgGPA;
+  if (el4) el4.textContent = '↑ ' + total + ' total enrolled';
+}
+
+function renderStudents() {
+  const el = document.getElementById('stu-tbody');
+  if (!el) return;
+  const q  = (document.getElementById('stu-search')  || {}).value || '';
+  const sf = (document.getElementById('stu-filter')  || {}).value || '';
+  const lc = q.toLowerCase();
+  const list = DATA.students.filter(s => {
+    const status = stuStatus(s.att);
+    return (!lc || s.name.toLowerCase().includes(lc) || s.roll.toLowerCase().includes(lc) || s.branch.toLowerCase().includes(lc))
+        && (!sf  || status === sf);
+  });
+  if (!list.length) {
+    el.innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:20px;text-align:center">No students found.</td></tr>';
+    return;
+  }
+  const statBadge = { Active:'bd', Warning:'bc', 'At Risk':'be', Honors:'bd' };
+  el.innerHTML = list.map(s => {
+    const status = stuStatus(s.att);
+    const ac = s.att >= 85 ? 'var(--accent4)' : s.att >= 75 ? 'var(--accent3)' : 'var(--accent5)';
+    const idx = DATA.students.indexOf(s);
+    return `<tr>
+      <td><strong>${s.name}</strong></td>
+      <td style="font-family:'DM Mono',monospace;font-size:.76rem;color:var(--muted)">${s.roll}</td>
+      <td>${s.branch}</td>
+      <td style="color:${ac};font-weight:600">${s.att}%</td>
+      <td><strong>${s.gpa}</strong></td>
+      <td><span class="badge ${statBadge[status] || 'ba'}">${status}</span></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="viewStudent(${idx})">View</button></td>
+    </tr>`;
+  }).join('');
+  updateStudentStats();
+}
+
+function viewStudent(idx) {
+  const s = DATA.students[idx];
+  const status = stuStatus(s.att);
+  const ac = s.att >= 85 ? 'var(--accent4)' : s.att >= 75 ? 'var(--accent3)' : 'var(--accent5)';
+  openModal(`
+    <div class="modal-title">👤 ${s.name}</div>
+    <div class="modal-sub">${s.roll} · ${s.branch} · ${s.email}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+      <div style="padding:12px;background:var(--bg3);border-radius:10px">
+        <div style="font-size:.7rem;color:var(--muted)">Attendance</div>
+        <div style="font-size:1.5rem;font-family:'Syne',sans-serif;font-weight:800;color:${ac}">${s.att}%</div>
+      </div>
+      <div style="padding:12px;background:var(--bg3);border-radius:10px">
+        <div style="font-size:.7rem;color:var(--muted)">CGPA</div>
+        <div style="font-size:1.5rem;font-family:'Syne',sans-serif;font-weight:800;color:var(--accent)">${s.gpa}</div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px"><span class="badge bd">${status}</span></div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" onclick="closeModal();toast('Notice sent to ${s.name}','ok')">📢 Send Notice</button>
+      <button class="btn btn-danger  btn-sm" onclick="deleteStudent(${idx})">🗑 Remove</button>
+      <button class="btn btn-ghost   btn-sm" onclick="closeModal()">Close</button>
+    </div>
+  `);
+}
+
+function deleteStudent(idx) {
+  const name = DATA.students[idx].name;
+  DATA.students.splice(idx, 1);
+  closeModal();
+  renderStudents();
+  toast(name + ' removed from records.', 'info');
+}
+
+function addStudent() {
+  const name   = document.getElementById('sa-name').value.trim();
+  const roll   = document.getElementById('sa-roll').value.trim();
+  const branch = document.getElementById('sa-branch').value;
+  const email  = document.getElementById('sa-email').value.trim();
+  const att    = parseFloat(document.getElementById('sa-att').value) || 0;
+  const gpa    = parseFloat(document.getElementById('sa-gpa').value) || 0;
+  if (!name || !roll || !email) { toast('Name, Roll No, and Email are required.', 'err'); return; }
+  if (DATA.students.find(s => s.roll === roll)) { toast('Roll number already exists!', 'err'); return; }
+  if (att < 0 || att > 100) { toast('Attendance must be 0–100.', 'err'); return; }
+  if (gpa < 0 || gpa > 10)  { toast('CGPA must be 0–10.', 'err'); return; }
+  DATA.students.unshift({ name, roll, branch, att, gpa, email });
+  toast('Student "' + name + '" added!', 'ok');
+  ['sa-name','sa-roll','sa-email','sa-att','sa-gpa'].forEach(id => document.getElementById(id).value = '');
+  renderStudents();
+}
+
+function sortByGPA() {
+  stuSortAsc = !stuSortAsc;
+  DATA.students.sort((a,b) => stuSortAsc ? a.gpa - b.gpa : b.gpa - a.gpa);
+  renderStudents();
+  toast('Sorted by CGPA ' + (stuSortAsc ? '↑ Low→High' : '↓ High→Low'), 'info');
+}
+
+function exportCSV() {
+  const hdr = 'Name,Roll No,Branch,Attendance,CGPA,Status,Email';
+  const rows = DATA.students.map(s =>
+    '"' + [s.name, s.roll, s.branch, s.att + '%', s.gpa, stuStatus(s.att), s.email].join('","') + '"'
+  );
+  const csv = [hdr, ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'students_lyn2up.csv';
+  a.click();
+  toast('CSV exported!', 'ok');
+}
+
+function renderNotices() {
+  const el = document.getElementById('notices-list');
+  if (!el) return;
+  if (!DATA.notices.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:.85rem;padding:10px 0">No notices yet.</div>';
+    return;
+  }
+  el.innerHTML = DATA.notices.map((n, i) => {
+    const ic   = n.pri === 'Urgent' ? 'ic-e' : n.pri === 'Important' ? 'ic-c' : 'ic-a';
+    const icon = n.pri === 'Urgent' ? '🔴'   : n.pri === 'Important' ? '⚠️'   : '📢';
+    const badge= n.pri === 'Urgent' ? 'be'   : n.pri === 'Important' ? 'bc'   : 'ba';
+    return `<div class="notice-item">
+      <div class="notice-icon ${ic}">${icon}</div>
+      <div style="flex:1">
+        <div style="font-weight:500;font-size:.84rem;margin-bottom:2px">${n.title}</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:4px">${n.msg}</div>
+        <div style="font-size:.68rem;color:var(--muted)">${n.time} · <span class="badge ${badge}">${n.pri}</span></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="deleteNotice(${i})" style="flex-shrink:0;padding:3px 9px">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function postNotice() {
+  const title = document.getElementById('nt-title').value.trim();
+  const msg   = document.getElementById('nt-msg').value.trim();
+  const pri   = document.getElementById('nt-pri').value;
+  if (!title || !msg) { toast('Title and message are required.', 'err'); return; }
+  DATA.notices.unshift({ title, msg, pri, time:'Just now' });
+  toast('Notice posted!', 'ok');
+  document.getElementById('nt-title').value = '';
+  document.getElementById('nt-msg').value = '';
+  renderNotices();
+}
+
+function deleteNotice(i) {
+  DATA.notices.splice(i, 1);
+  renderNotices();
+  toast('Notice removed.', 'info');
+}
+
+// ═══════════════════════════════════════════════════════
+// MODULE C — EXAMS
+// ═══════════════════════════════════════════════════════
+function renderExamCards() {
+  const el = document.getElementById('exam-cards');
+  if (!el) return;
+  el.innerHTML = DATA.exams.map(e => `
+    <div class="card">
+      <div class="card-icon ${e.ic}">📝</div>
+      <div class="card-title">${e.title}</div>
+      <div class="card-desc" style="margin-bottom:14px">${e.subj} · ${e.qs.length} questions · ${e.dur} min · ${e.marks} marks</div>
+      <button class="btn btn-primary btn-sm" onclick="startExam(${e.id})">Start Exam</button>
+    </div>`).join('');
+}
+
+function startExam(id) {
+  const exam = DATA.exams.find(e => e.id === id);
+  if (!exam) return;
+  EX = { exam, qi:0, answers: new Array(exam.qs.length).fill(null), interval:null };
+  document.getElementById('ex-list').style.display   = 'none';
+  document.getElementById('ex-active').style.display = 'block';
+  document.getElementById('ex-result').style.display = 'none';
+  document.getElementById('ex-subj-lbl').textContent  = exam.subj;
+  document.getElementById('ex-title-lbl').textContent = exam.title;
+  renderExamProgress();
+  renderQuestion();
+  startTimer(exam.dur * 60);
+}
+
+function startTimer(s) {
+  if (EX.interval) clearInterval(EX.interval);
+  const el = document.getElementById('ex-timer');
+  function tick() {
+    const m   = String(Math.floor(s / 60)).padStart(2, '0');
+    const sec = String(s % 60).padStart(2, '0');
+    if (el) {
+      el.textContent = m + ':' + sec;
+      el.className = 'timer' + (s < 120 ? ' warn' : '');
+    }
+    if (s <= 0) { clearInterval(EX.interval); showResult(); return; }
+    s--;
+  }
+  tick();
+  EX.interval = setInterval(tick, 1000);
+}
+
+function renderExamProgress() {
+  const el = document.getElementById('ex-progress');
+  if (!el || !EX.exam) return;
+  el.innerHTML = EX.exam.qs.map((q, i) => {
+    let cls = '';
+    if (i === EX.qi) cls = 'cur';
+    else if (EX.answers[i] !== null) cls = EX.answers[i] === q.ans ? 'ok' : 'bad';
+    return '<div class="ep ' + cls + '"></div>';
+  }).join('');
+}
+
+function renderQuestion() {
+  const q = EX.exam.qs[EX.qi];
+  const letters = ['A','B','C','D'];
+  const answered = EX.answers[EX.qi] !== null;
+  document.getElementById('q-label').textContent = 'Question ' + (EX.qi+1) + ' of ' + EX.exam.qs.length;
+  document.getElementById('q-text').textContent  = q.q;
+  const fb = document.getElementById('q-feedback');
+  fb.style.display = 'none';
+  document.getElementById('q-opts').innerHTML = q.opts.map((o, i) => {
+    let cls = 'opt';
+    if (answered) {
+      cls += ' locked';
+      if (i === q.ans)              cls += ' correct';
+      else if (i === EX.answers[EX.qi]) cls += ' wrong';
+    }
+    return `<div class="${cls}" onclick="${answered ? '' : 'pickAns(' + EX.qi + ',' + i + ')'}">
+      <div class="opt-ltr">${letters[i]}</div><span>${o}</span>
+    </div>`;
+  }).join('');
+  if (answered) {
+    const correct = EX.answers[EX.qi] === q.ans;
+    fb.style.display = 'block';
+    fb.style.cssText = 'display:block;margin-top:13px;padding:11px 15px;border-radius:10px;font-size:.83rem;'
+      + 'background:rgba(' + (correct ? '16,185,129' : '244,63,94') + ',.1);'
+      + 'border:1px solid rgba(' + (correct ? '16,185,129' : '244,63,94') + ',.28);'
+      + 'color:var(--accent' + (correct ? '4' : '5') + ')';
+    fb.textContent = correct
+      ? '✓ Correct! Well done.'
+      : '✕ Incorrect. Correct answer: ' + letters[q.ans] + '. ' + q.opts[q.ans];
+  }
+  const prevBtn = document.getElementById('btn-prev');
+  const nextBtn = document.getElementById('btn-next');
+  if (prevBtn) prevBtn.disabled = EX.qi === 0;
+  if (nextBtn) nextBtn.textContent = EX.qi === EX.exam.qs.length - 1 ? 'Finish ✓' : 'Next →';
+  renderExamProgress();
+}
+
+function pickAns(qi, opt) { EX.answers[qi] = opt; renderQuestion(); }
+
+function nextQ() {
+  if (EX.qi < EX.exam.qs.length - 1) { EX.qi++; renderQuestion(); }
+  else showResult();
+}
+function prevQ() { if (EX.qi > 0) { EX.qi--; renderQuestion(); } }
+
+function showResult() {
+  clearInterval(EX.interval);
+  const exam = EX.exam;
+  let correct = 0;
+  exam.qs.forEach((q, i) => { if (EX.answers[i] === q.ans) correct++; });
+  const total = exam.qs.length;
+  const pct   = Math.round(correct / total * 100);
+  const grade = pct >= 90 ? 'A+' : pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : 'F';
+  const passed = pct >= 40;
+  DATA.examResults.unshift({ title:exam.title, date:new Date().toLocaleDateString('en-IN'), score:correct+'/'+total, pct, grade, passed });
+  document.getElementById('ex-active').style.display = 'none';
+  document.getElementById('ex-result').style.display = 'block';
+  document.getElementById('res-emoji').textContent = pct >= 80 ? '🏆' : pct >= 60 ? '😊' : pct >= 40 ? '😐' : '😔';
+  document.getElementById('res-score').textContent = pct + '% — Grade ' + grade;
+  document.getElementById('res-msg').textContent   = 'You answered ' + correct + ' of ' + total + ' correctly. ' + (passed ? 'Congratulations, you passed!' : 'Keep practicing!');
+  document.getElementById('res-bars').innerHTML =
+    rbar('Correct (' + correct + ')', pct, 'var(--accent4)') +
+    rbar('Wrong (' + (total-correct) + ')', 100-pct, 'var(--accent5)');
+  renderResults();
+}
+
+function rbar(lbl, pct, color) {
+  return `<div class="rbar"><div class="rbar-lbl" style="color:${color}">${lbl}</div>
+    <div class="rbar-track"><div class="rbar-fill" style="width:${pct}%;background:${color}"></div></div>
+    <div class="rbar-val" style="color:${color}">${pct}%</div></div>`;
+}
+
+function resetExam() {
+  document.getElementById('ex-result').style.display = 'none';
+  document.getElementById('ex-list').style.display   = 'block';
+}
+
+function renderResults() {
+  const el = document.getElementById('results-tbody');
+  if (!el) return;
+  if (!DATA.examResults.length) {
+    el.innerHTML = '<tr><td colspan="6" style="color:var(--muted);padding:20px;text-align:center">No exams taken yet.</td></tr>';
+    return;
+  }
+  el.innerHTML = DATA.examResults.map(r => `
+    <tr>
+      <td><strong>${r.title}</strong></td>
+      <td style="color:var(--muted)">${r.date}</td>
+      <td style="font-family:'DM Mono',monospace">${r.score}</td>
+      <td style="color:${r.pct >= 60 ? 'var(--accent4)' : 'var(--accent5)'};font-weight:600">${r.pct}%</td>
+      <td><strong>${r.grade}</strong></td>
+      <td><span class="badge ${r.passed ? 'bd' : 'be'}">${r.passed ? 'Passed' : 'Failed'}</span></td>
+    </tr>`).join('');
+}
+
+function addCEQ() {
+  ceQN++;
+  const div = document.createElement('div');
+  div.style.cssText = 'background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px';
+  div.innerHTML = `<div style="font-size:.7rem;color:var(--muted);margin-bottom:7px">Question ${ceQN}</div>
+    <input class="fi" placeholder="Question text" style="margin-bottom:7px">
+    ${['A','B','C','D'].map((l,i) => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span style="width:24px;height:24px;border-radius:5px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0">${l}</span>
+      <input class="fi" placeholder="Option ${l}">
+    </div>`).join('')}
+    <div class="form-group" style="margin-top:8px;margin-bottom:0">
+      <label class="lbl">Correct Answer</label>
+      <select class="fi"><option>A</option><option>B</option><option>C</option><option>D</option></select>
+    </div>`;
+  document.getElementById('ce-qs-wrap').appendChild(div);
+}
+
+function createExam() {
+  const title = document.getElementById('ce-title').value.trim();
+  const subj  = document.getElementById('ce-subj').value.trim();
+  const dur   = parseInt(document.getElementById('ce-dur').value) || 30;
+  const marks = parseInt(document.getElementById('ce-marks').value) || 50;
+  if (!title || !subj) { toast('Title and Subject are required.', 'err'); return; }
+  DATA.exams.push({ id: Date.now(), title, subj, dur, marks, ic:'ic-a', qs:[
+    { q:'Sample Question — edit via "Create Exam" again to add real questions.', opts:['Option A','Option B','Option C','Option D'], ans:0 }
+  ]});
+  toast('Exam "' + title + '" created!', 'ok');
+  document.getElementById('ce-title').value = '';
+  document.getElementById('ce-subj').value  = '';
+  document.getElementById('ce-qs-wrap').innerHTML = '';
+  ceQN = 0;
+  renderExamCards();
+}
+
+// ═══════════════════════════════════════════════════════
+// MODULE D — ATTENDANCE
+// ═══════════════════════════════════════════════════════
+function drawQR() {
+  const canvas = document.getElementById('qr-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const sz = 188;
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, sz, sz);
+  const cells = 19, cell = Math.floor((sz - 20) / cells), off = 10;
+  const seed = Math.floor(Date.now() / 60000);
+  function rnd(x, y) { return ((x * 73 + y * 47 + seed * 13) % 23) > 11; }
+  ctx.fillStyle = '#050a14';
+  for (let r = 0; r < cells; r++) {
+    for (let c = 0; c < cells; c++) {
+      const inF = (r < 7 && c < 7) || (r < 7 && c > cells-8) || (r > cells-8 && c < 7);
+      if (!inF && rnd(r, c)) ctx.fillRect(off + c*cell, off + r*cell, cell-1, cell-1);
+    }
+  }
+  function finder(row, col) {
+    ctx.fillStyle = '#050a14';
+    ctx.fillRect(off + col*cell, off + row*cell, 7*cell, 7*cell);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(off + col*cell + cell, off + row*cell + cell, 5*cell, 5*cell);
+    ctx.fillStyle = '#00e5ff';
+    ctx.fillRect(off + col*cell + 2*cell, off + row*cell + 2*cell, 3*cell, 3*cell);
+  }
+  finder(0, 0); finder(0, cells-7); finder(cells-7, 0);
+}
+
+function refreshQR() { drawQR(); toast('QR refreshed!', 'info'); }
+
+function markPresent() {
+  if (qrMarked) { toast('Already marked present for this session!', 'info'); return; }
+  qrMarked = true;
+  qrCount = Math.min(148, qrCount + 1);
+  const el = document.getElementById('qr-count-lbl');
+  const fb = document.getElementById('qr-fb');
+  if (el) el.textContent = qrCount + ' / 148 marked present';
+  if (fb) fb.innerHTML = '<span style="color:var(--accent4)">✓ Attendance marked for Advanced Algorithms!</span>';
+  DATA.attendance[22] = 'present';
+  updateAttStats();
+  renderCalendar();
+  toast('Attendance marked successfully!', 'ok');
+}
+
+function updateAttStats() {
+  const vals   = Object.values(DATA.attendance);
+  const p      = vals.filter(v => v === 'present').length;
+  const a      = vals.filter(v => v === 'absent').length;
+  const l      = vals.filter(v => v === 'late').length;
+  const total  = p + a + l || 1;
+  const pct    = Math.round(p / total * 100);
+  const pEl  = document.getElementById('att-pct');
+  const prEl = document.getElementById('att-present');
+  const abEl = document.getElementById('att-absent');
+  const ntEl = document.getElementById('att-note');
+  if (pEl)  pEl.textContent  = pct + '%';
+  if (prEl) prEl.textContent = p;
+  if (abEl) abEl.textContent = a + l;
+  if (ntEl) {
+    ntEl.textContent  = pct >= 75 ? '✓ Above required 75%' : '⚠ Below required 75%!';
+    ntEl.className    = 'sc-chg ' + (pct >= 75 ? 'up' : 'dn');
+  }
+  const ovEl = document.getElementById('att-overview');
+  if (ovEl) ovEl.innerHTML =
+    rbar('Present (' + p + 'd)', Math.round(p/total*100), 'var(--accent4)') +
+    rbar('Absent (' + a + 'd)',  Math.round(a/total*100), 'var(--accent5)') +
+    rbar('Late (' + l + 'd)',    Math.round(l/total*100), 'var(--accent3)');
+  const subEl = document.getElementById('att-subjects');
+  if (subEl) subEl.innerHTML = [
+    { sub:'Advanced Algorithms',  pct:93 },
+    { sub:'Mathematics III',      pct:88 },
+    { sub:'Software Engineering', pct:96 },
+    { sub:'Computer Networks',    pct:80 },
+  ].map(s => `
+    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(26,45,74,.35);font-size:.79rem">
+      <span style="color:var(--muted)">${s.sub}</span>
+      <span style="color:${s.pct >= 85 ? 'var(--accent4)' : s.pct >= 75 ? 'var(--accent3)' : 'var(--accent5)'};font-weight:600">${s.pct}%</span>
+    </div>`).join('');
+}
+
+function renderCalendar() {
+  const el = document.getElementById('att-calendar');
+  if (!el) return;
+  // Feb 2026 starts on Sunday (day 0)
+  let html = '';
+  for (let d = 1; d <= 28; d++) {
+    const st  = DATA.attendance[d];
+    const isWeekend = (d === 1 || d === 7 || d === 8 || d === 14 || d === 15 || d === 21 || d === 22 || d === 28);
+    const isToday   = d === 22;
+    let cls = 'att-day';
+    if (isToday) cls += ' today';
+    else if (d > 22) cls += ' future';
+    else if (st === 'present') cls += ' present';
+    else if (st === 'absent')  cls += ' absent';
+    else if (st === 'late')    cls += ' late';
+    else if (isWeekend) cls += ' future';
+    else cls += ' future';
+    html += '<div class="' + cls + '">' + d + '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function renderSessions() {
+  const el = document.getElementById('sess-tbody');
+  if (!el) return;
+  el.innerHTML = DATA.sessions.map(s => {
+    const pct = s.present != null ? Math.round(s.present / (s.present + s.absent) * 100) + '%' : '—';
+    const badge = s.status === 'Live' ? 'be' : s.status === 'Done' ? 'bd' : 'bf';
+    const label = s.status === 'Live' ? '🔴 Live' : s.status;
+    return `<tr>
+      <td><strong>${s.sub}</strong></td>
+      <td style="font-family:'DM Mono',monospace">${s.time}</td>
+      <td>${s.fac}</td>
+      <td style="color:var(--accent4)">${s.present != null ? s.present : '—'}</td>
+      <td style="color:var(--accent5)">${s.absent  != null ? s.absent  : '—'}</td>
+      <td>${pct}</td>
+      <td><span class="badge ${badge}">${label}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function submitManual() {
+  const sub    = document.getElementById('man-sub').value;
+  const date   = document.getElementById('man-date').value;
+  const status = document.getElementById('man-status').value;
+  if (!date) { toast('Please select a date.', 'err'); return; }
+  const d = new Date(date).getDate();
+  if (d >= 1 && d <= 28) DATA.attendance[d] = status.toLowerCase();
+  toast(status + ' recorded for ' + sub + ' on ' + date + '.', 'ok');
+  document.getElementById('man-reason').value = '';
+  updateAttStats();
+  renderCalendar();
+}
+
+// ═══════════════════════════════════════════════════════
+// MODULE E — INTERNSHIPS
+// ═══════════════════════════════════════════════════════
+function renderInternships() {
+  const el  = document.getElementById('int-list');
+  if (!el) return;
+  const q   = (document.getElementById('int-search') || {}).value || '';
+  const lc  = q.toLowerCase();
+  const list = DATA.internships.filter(it =>
+    (!lc || it.role.toLowerCase().includes(lc) || it.co.toLowerCase().includes(lc) || it.skills.some(s => s.toLowerCase().includes(lc)))
+    && (intCat === 'All' || it.type === intCat || it.cat === intCat)
+  );
+  if (!list.length) {
+    el.innerHTML = '<div style="color:var(--muted);padding:20px 0;text-align:center">No internships match your filter.</div>';
+    return;
+  }
+  el.innerHTML = list.map(it => {
+    const idx = DATA.internships.indexOf(it);
+    return `<div class="int-item">
+      <div class="co-logo">${it.emoji}</div>
+      <div style="flex:1">
+        <div class="int-role">${it.role}</div>
+        <div class="int-co">${it.co} · ${it.loc} · ${it.type}</div>
+        <div class="int-tags">
+          <span class="badge bd">₹${(it.pay/1000).toFixed(0)}K/mo</span>
+          ${it.skills.map(s => '<span class="badge bf">' + s + '</span>').join('')}
+        </div>
+        <div class="int-meta">Duration: ${it.dur} · Deadline: ${it.dl}</div>
+      </div>
+      <button class="btn ${it.applied ? 'btn-ghost' : 'btn-primary'} btn-sm" onclick="applyInt(${idx})" style="flex-shrink:0">
+        ${it.applied ? '✓ Applied' : 'Apply Now'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function setIntCat(cat, el) {
+  intCat = cat;
+  document.querySelectorAll('#int-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderInternships();
+}
+
+function applyInt(idx) {
+  if (DATA.internships[idx].applied) { toast('Already applied!', 'info'); return; }
+  DATA.internships[idx].applied = true;
+  renderInternships();
+  renderApplied();
+  toast('Applied to ' + DATA.internships[idx].role + ' at ' + DATA.internships[idx].co + '!', 'ok');
+}
+
+function renderApplied() {
+  const el = document.getElementById('applied-list');
+  if (!el) return;
+  const applied = DATA.internships.filter(i => i.applied);
+  if (!applied.length) {
+    el.innerHTML = '<div style="color:var(--muted);padding:20px 0;text-align:center">No applications yet. Browse and apply!</div>';
+    return;
+  }
+  el.innerHTML = `<div class="tbl-wrap"><div class="tbl-head"><div class="tbl-title">📋 My Applications</div></div>
+    <table><thead><tr><th>Role</th><th>Company</th><th>Type</th><th>Stipend</th><th>Deadline</th><th>Status</th></tr></thead>
+    <tbody>${applied.map(i => `<tr>
+      <td><strong>${i.role}</strong></td>
+      <td>${i.co}</td>
+      <td>${i.type}</td>
+      <td>₹${(i.pay/1000).toFixed(0)}K/mo</td>
+      <td>${i.dl}</td>
+      <td><span class="badge bc">Under Review</span></td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+
+function renderTraining() {
+  const el = document.getElementById('training-grid');
+  if (!el) return;
+  el.innerHTML = DATA.training.map(t => `
+    <div class="card">
+      <div class="card-icon ${t.ic}">${t.emoji}</div>
+      <div class="card-title">${t.name}</div>
+      <div class="card-desc" style="margin-bottom:14px">By ${t.provider} · ${t.dur} · 🏅 Certificate</div>
+      <button class="btn btn-primary btn-sm" onclick="toast('Enrolled in &quot;${t.name}&quot;!','ok')">Enroll</button>
+    </div>`).join('');
+}
+
+function postInternship() {
+  const role = document.getElementById('pi-role').value.trim();
+  const co   = document.getElementById('pi-co').value.trim();
+  const loc  = document.getElementById('pi-loc').value.trim();
+  const pay  = parseInt(document.getElementById('pi-pay').value) || 0;
+  const dur  = document.getElementById('pi-dur').value.trim();
+  const dl   = document.getElementById('pi-deadline').value;
+  const skillsRaw = document.getElementById('pi-skills').value;
+  const skills = skillsRaw.split(',').map(s => s.trim()).filter(Boolean);
+  const type = document.getElementById('pi-type').value;
+  const cat  = document.getElementById('pi-cat').value;
+  if (!role || !co || !loc) { toast('Role, Company, and Location are required.', 'err'); return; }
+  DATA.internships.unshift({ role, co, loc, type, pay, dur, dl, skills, cat, emoji:'🏢', applied:false });
+  toast('"' + role + '" at ' + co + ' posted!', 'ok');
+  ['pi-role','pi-co','pi-loc','pi-pay','pi-dur','pi-skills'].forEach(id => document.getElementById(id).value = '');
+  renderInternships();
+}
+
+// ═══════════════════════════════════════════════════════
+// MODULE F — LIBRARY
+// ═══════════════════════════════════════════════════════
+function renderBooks() {
+  const el = document.getElementById('book-grid');
+  if (!el) return;
+  const q  = (document.getElementById('book-search') || {}).value || '';
+  const lc = q.toLowerCase();
+  const list = DATA.books.filter(b =>
+    b.type !== 'E-Book'
+    && (!lc || b.title.toLowerCase().includes(lc) || b.author.toLowerCase().includes(lc) || b.isbn.includes(lc))
+    && (bookCat === 'All' || b.cat === bookCat)
+  );
+  if (!list.length) {
+    el.innerHTML = '<div style="color:var(--muted);padding:20px 0;text-align:center;grid-column:1/-1">No books found.</div>';
+    return;
+  }
+  el.innerHTML = list.map(b => {
+    const idx = DATA.books.indexOf(b);
+    return `<div class="book-card" onclick="viewBook(${idx})">
+      <div class="book-cover" style="background:linear-gradient(135deg,#${b.bg})">${b.emoji}</div>
+      <div class="book-info">
+        <div class="book-title">${b.title}</div>
+        <div class="book-author">${b.author}</div>
+        <div style="margin-top:7px"><span class="badge ${b.avail > 0 ? 'bd' : 'be'}">${b.avail > 0 ? b.avail + ' left' : 'Unavailable'}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setBookCat(cat, el) {
+  bookCat = cat;
+  document.querySelectorAll('#book-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderBooks();
+}
+
+function viewBook(idx) {
+  const b = DATA.books[idx];
+  const avail = b.avail > 0 && !b.myIssued;
+  openModal(`
+    <div class="modal-title">${b.emoji} ${b.title}</div>
+    <div class="modal-sub">by ${b.author}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+      <div style="padding:12px;background:var(--bg3);border-radius:10px"><div style="font-size:.7rem;color:var(--muted)">Available</div><div style="font-weight:700;color:${avail?'var(--accent4)':'var(--accent5)'};">${b.avail} / ${b.copies}</div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:10px"><div style="font-size:.7rem;color:var(--muted)">Category</div><div style="font-weight:700">${b.cat}</div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:10px"><div style="font-size:.7rem;color:var(--muted)">Type</div><div style="font-weight:700">${b.type}</div></div>
+      <div style="padding:12px;background:var(--bg3);border-radius:10px"><div style="font-size:.7rem;color:var(--muted)">ISBN</div><div style="font-weight:600;font-size:.78rem">${b.isbn}</div></div>
+    </div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      ${avail
+        ? '<button class="btn btn-primary" onclick="issueBook(' + idx + ')">📖 Issue Book</button>'
+        : '<button class="btn btn-ghost" disabled>' + (b.myIssued ? 'Already Issued' : 'Unavailable') + '</button>'}
+      ${b.type === 'E-Book' || b.type === 'Both'
+        ? '<button class="btn btn-success" onclick="closeModal();toast(\'Opening e-reader…\',\'info\')">📱 Read Online</button>'
+        : ''}
+      <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+    </div>
+  `);
+}
+
+function issueBook(idx) {
+  const b = DATA.books[idx];
+  if (b.avail <= 0 || b.myIssued) { toast('Book not available.', 'err'); return; }
+  b.avail--;
+  b.myIssued = true;
+  const issued = new Date();
+  const due    = new Date(issued);
+  due.setDate(due.getDate() + 14);
+  DATA.myBooks.push({
+    title: b.title, author: b.author,
+    issuedOn: issued.toLocaleDateString('en-IN'),
+    dueDate:  due.toLocaleDateString('en-IN'),
+    overdue: false, _idx: idx,
+  });
+  closeModal();
+  toast('"' + b.title + '" issued! Due: ' + due.toLocaleDateString('en-IN'), 'ok');
+  renderBooks();
+  renderMyBooks();
+  const el = document.getElementById('lib-issued');
+  if (el) el.textContent = (parseInt(el.textContent.replace(/,/g,'')) + 1).toLocaleString();
+}
+
+function renderEbooks() {
+  const el = document.getElementById('ebook-grid');
+  if (!el) return;
+  const list = DATA.books.filter(b => b.type === 'E-Book' || b.type === 'Both');
+  el.innerHTML = list.map(b => {
+    const idx = DATA.books.indexOf(b);
+    return `<div class="book-card" onclick="viewBook(${idx})">
+      <div class="book-cover" style="background:linear-gradient(135deg,#${b.bg})">${b.emoji}</div>
+      <div class="book-info">
+        <div class="book-title">${b.title}</div>
+        <div class="book-author">${b.author}</div>
+        <div style="margin-top:7px"><span class="badge bf">E-Book</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMyBooks() {
+  const el = document.getElementById('mybooks-tbody');
+  if (!el) return;
+  if (!DATA.myBooks.length) {
+    el.innerHTML = '<tr><td colspan="6" style="color:var(--muted);padding:20px;text-align:center">No books currently issued.</td></tr>';
+    return;
+  }
+  el.innerHTML = DATA.myBooks.map((b, i) => `
+    <tr>
+      <td><strong>${b.title}</strong></td>
+      <td style="color:var(--muted)">${b.author}</td>
+      <td>${b.issuedOn}</td>
+      <td>${b.dueDate}</td>
+      <td><span class="badge ${b.overdue ? 'be' : 'bd'}">${b.overdue ? 'Overdue' : 'Active'}</span></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="returnBook(${i})">Return</button></td>
+    </tr>`).join('');
+}
+
+function returnBook(i) {
+  const b = DATA.myBooks[i];
+  DATA.books[b._idx].avail++;
+  DATA.books[b._idx].myIssued = false;
+  DATA.myBooks.splice(i, 1);
+  renderMyBooks();
+  renderBooks();
+  toast('"' + b.title + '" returned successfully.', 'ok');
+}
+
+function addBook() {
+  const title  = document.getElementById('ab-title').value.trim();
+  const author = document.getElementById('ab-author').value.trim();
+  const isbn   = document.getElementById('ab-isbn').value.trim() || 'N/A';
+  const cat    = document.getElementById('ab-cat').value;
+  const copies = Math.max(1, parseInt(document.getElementById('ab-copies').value) || 1);
+  const type   = document.getElementById('ab-type').value;
+  if (!title || !author) { toast('Title and Author are required.', 'err'); return; }
+  const ems   = { CS:'📘', Math:'📐', Physics:'⚡', Engineering:'🏗️', Literature:'📖' };
+  const bgs   = ['1e3a5f,2d6a4f','4a1942,831843','1a2e5e,163153','3b1f08,7c3a00','134e4a,0f766e'];
+  const bg    = bgs[Math.floor(Math.random() * bgs.length)];
+  DATA.books.unshift({ title, author, isbn, cat, copies, avail:copies, type, emoji: ems[cat] || '📚', bg, myIssued:false });
+  toast('"' + title + '" added to library!', 'ok');
+  ['ab-title','ab-author','ab-isbn','ab-copies'].forEach(id => document.getElementById(id).value = '');
+  renderBooks();
+  renderEbooks();
+  const el = document.getElementById('lib-total');
+  if (el) el.textContent = (parseInt(el.textContent.replace(/,/g,'')) + copies).toLocaleString();
+}
+
+// ═══════════════════════════════════════════════════════
+// ANTI-CHEAT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('visibilitychange', () => {
+  const active = document.getElementById('ex-active');
+  if (document.hidden && active && active.style.display !== 'none') {
+    toast('⚠ Tab switching detected! This incident is logged.', 'err');
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  // Set default dates
+  const td = today();
+  ['man-date','pi-deadline'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = td;
+  });
+  // Kick off home counters
+  initHome();
+  // Pre-render all pages so data is ready
+  renderMyCourses(); renderBrowseGrid(); renderLiveSessions();
+  renderStudents(); renderNotices(); updateStudentStats();
+  renderExamCards(); renderResults();
+  renderCalendar(); renderSessions(); updateAttStats(); setTimeout(drawQR, 150);
+  renderInternships(); renderApplied(); renderTraining();
+  renderBooks(); renderEbooks(); renderMyBooks();
+});
+</script>
+</body>
+</html>
