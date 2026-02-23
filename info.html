@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVendor - Scalable Commerce Platform</title>
+    <!-- Tailwind CSS for Responsive Design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .chat-widget {
+            transition: all 0.3s ease;
+        }
+
+        .hidden-section {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- NAVIGATION -->
+    <nav class="bg-blue-900 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold"><i class="fas fa-shield-alt"></i> SecureVendor</h1>
+            <div id="nav-links">
+                <button onclick="showSection('login-section')" class="hover:text-blue-300">Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. LOGIN / REGISTER SECTION -->
+    <section id="login-section" class="container mx-auto p-6 flex justify-center items-center min-h-[80vh]">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border-t-4 border-blue-600">
+
+            <!-- Toggle Tabs -->
+            <div class="flex mb-6 border-b">
+                <button onclick="toggleAuth('login')" id="tab-login"
+                    class="flex-1 pb-2 border-b-2 border-blue-600 font-bold text-blue-600">Login</button>
+                <button onclick="toggleAuth('register')" id="tab-register" class="flex-1 pb-2 text-gray-500">Vendor
+                    Registration</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" id="login-email"
+                        class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" id="login-pass"
+                        class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Secure
+                    Login</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="hidden-section" onsubmit="handleRegister(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Business Name</label>
+                    <input type="text" id="reg-business" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Government Tax ID (GST/EIN)</label>
+                    <input type="text" id="reg-gov-id" placeholder="Try 'GOV123' for auto-verify"
+                        class="w-full p-2 border rounded" required>
+                    <p class="text-xs text-gray-500 mt-1">Enter a valid Gov ID to bypass verification.</p>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" id="reg-email" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" id="reg-pass" class="w-full p-2 border rounded" required>
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Verify &
+                    Register</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- 2. VENDOR DASHBOARD (Inventory & Orders) -->
+    <section id="dashboard-section" class="container mx-auto p-6 hidden-section">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Sidebar -->
+            <div class="col-span-1 bg-white p-4 rounded shadow">
+                <div class="text-center mb-6">
+                    <div
+                        class="w-16 h-16 bg-blue-100 rounded-full mx-auto flex items-center justify-center text-2xl text-blue-600 mb-2">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h3 class="font-bold" id="display-username">Vendor Name</h3>
+                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"
+                        id="verification-badge">Verified</span>
+                </div>
+                <ul class="space-y-2">
+                    <li class="p-2 bg-blue-50 rounded cursor-pointer hover:bg-blue-100"
+                        onclick="showDashboardTab('inventory')">Inventory Management</li>
+                    <li class="p-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100"
+                        onclick="alert('Order history loaded from secure ledger.')">Order History</li>
+                    <li class="p-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100 text-red-500" onclick="logout()">
+                        Logout</li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-span-3">
+                <!-- Add Product Form -->
+                <div class="bg-white p-6 rounded shadow mb-6">
+                    <h3 class="text-xl font-bold mb-4">Add New Product</h3>
+                    <form onsubmit="addProduct(event)" class="flex gap-4 flex-wrap">
+                        <input type="text" id="prod-name" placeholder="Product Name" class="p-2 border rounded flex-1"
+                            required>
+                        <input type="number" id="prod-price" placeholder="Price ($)" class="p-2 border rounded w-32"
+                            required>
+                        <input type="number" id="prod-stock" placeholder="Stock Qty" class="p-2 border rounded w-32"
+                            required>
+                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Add to
+                            Inventory</button>
+                    </form>
+                </div>
+
+                <!-- Inventory Table -->
+                <div class="bg-white p-6 rounded shadow">
+                    <h3 class="text-xl font-bold mb-4">Current Inventory</h3>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-2">Product</th>
+                                <th class="p-2">Price</th>
+                                <th class="p-2">Stock</th>
+                                <th class="p-2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body">
+                            <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. PAYMENT MODAL (Simulated Stripe) -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Secure Checkout</h2>
+            <div class="bg-gray-100 p-4 rounded mb-4 text-sm">
+                <p><strong>Vendor:</strong> <span id="pay-vendor"></span></p>
+                <p><strong>Total:</strong> <span id="pay-total" class="text-green-600 font-bold"></span></p>
+            </div>
+
+            <!-- Simulated Stripe Elements -->
+            <div class="space-y-4 mb-6">
+                <input type="text" placeholder="Card Number (Simulated)" class="w-full p-2 border rounded bg-gray-50"
+                    value="4242 4242 4242 4242">
+                <div class="flex gap-4">
+                    <input type="text" placeholder="MM/YY" class="w-1/2 p-2 border rounded bg-gray-50" value="12/25">
+                    <input type="text" placeholder="CVC" class="w-1/2 p-2 border rounded bg-gray-50" value="123">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="processPayment(true)" class="flex-1 bg-green
