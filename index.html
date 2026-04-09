@@ -328,6 +328,7 @@ textarea.fi{resize:vertical;min-height:72px}
         <div class="chip" onclick="setBrowseCat('Math',this)">Mathematics</div>
         <div class="chip" onclick="setBrowseCat('Physics',this)">Physics</div>
         <div class="chip" onclick="setBrowseCat('Engineering',this)">Engineering</div>
+        <div class="chip" onclick="setBrowseCat('Training',this)">Training</div>
       </div>
       <div class="grid-3" id="browse-grid"></div>
     </div>
@@ -704,7 +705,7 @@ textarea.fi{resize:vertical;min-height:72px}
     <div class="tab-panel" id="lib-mybooks">
       <div class="tbl-wrap">
         <div class="tbl-head"><div class="tbl-title">📖 My Issued Books</div></div>
-        <table><thead><tr><th>Title</th><th>Author</th><th>Issued On</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+        <table><thead><tr><th>Title</th><th>Author</th><th>Student</th><th>Issued On</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
         <tbody id="mybooks-tbody"></tbody></table>
       </div>
     </div>
@@ -753,6 +754,13 @@ textarea.fi{resize:vertical;min-height:72px}
 
 <script>
 'use strict';
+if (!window.YT) {
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  if(firstScriptTag) firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  else document.head.appendChild(tag);
+}
 
 // ═══════════════════════════════════════════════════════
 // DATA
@@ -767,14 +775,14 @@ const DATA = {
     {name:'Ananya Patel',  roll:'IT2021088', branch:'Information Tech.', att:97, gpa:9.6, email:'ananya@college.edu'},
   ],
   courses: [
-    {name:'Advanced Data Structures & Algorithms', cat:'CS',          inst:'Dr. Priya Sharma',   lec:42, hrs:'18h 30m', prog:72,  emoji:'⚛️', ic:'ic-a'},
-    {name:'Machine Learning Fundamentals',         cat:'CS',          inst:'Prof. Rajesh Kumar',  lec:38, hrs:'16h 00m', prog:35,  emoji:'🤖', ic:'ic-e'},
-    {name:'Database Management Systems',           cat:'CS',          inst:'Dr. Anita Patel',     lec:36, hrs:'14h 20m', prog:100, emoji:'🗄️', ic:'ic-b'},
-    {name:'Computer Networks & Protocols',         cat:'CS',          inst:'Prof. Suresh Nair',   lec:28, hrs:'11h 45m', prog:18,  emoji:'📡', ic:'ic-c'},
-    {name:'Artificial Intelligence',              cat:'CS',          inst:'Dr. Meera Iyer',      lec:50, hrs:'22h 10m', prog:0,   emoji:'🧠', ic:'ic-f'},
-    {name:'Linear Algebra',                        cat:'Math',        inst:'Dr. Ramesh Kumar',    lec:30, hrs:'12h 00m', prog:55,  emoji:'📐', ic:'ic-d'},
-    {name:'Quantum Mechanics',                     cat:'Physics',     inst:'Prof. N. Bose',       lec:44, hrs:'20h 00m', prog:0,   emoji:'⚡', ic:'ic-c'},
-    {name:'Structural Engineering',                cat:'Engineering', inst:'Dr. A. Singh',        lec:32, hrs:'13h 30m', prog:20,  emoji:'🏗️', ic:'ic-a'},
+    {name:'Advanced Data Structures & Algorithms', cat:'CS',          inst:'Dr. Priya Sharma',   lec:42, hrs:'18h 30m', prog:0,   emoji:'⚛️', ic:'ic-a', ytId:'8hly31xKli0'},
+    {name:'Machine Learning Fundamentals',         cat:'CS',          inst:'Prof. Rajesh Kumar',  lec:38, hrs:'16h 00m', prog:0,   emoji:'🤖', ic:'ic-e', ytId:'i_LwzRmAEN0'},
+    {name:'Database Management Systems',           cat:'CS',          inst:'Dr. Anita Patel',     lec:36, hrs:'14h 20m', prog:0,   emoji:'🗄️', ic:'ic-b', ytId:'HXV3zeQKqGY'},
+    {name:'Computer Networks & Protocols',         cat:'CS',          inst:'Prof. Suresh Nair',   lec:28, hrs:'11h 45m', prog:0,   emoji:'📡', ic:'ic-c', ytId:'IPvYjXCsTg8'},
+    {name:'Artificial Intelligence',              cat:'CS',          inst:'Dr. Meera Iyer',      lec:50, hrs:'22h 10m', prog:0,   emoji:'🧠', ic:'ic-f', ytId:'JMUxmLqcHAc'},
+    {name:'Linear Algebra',                        cat:'Math',        inst:'Dr. Ramesh Kumar',    lec:30, hrs:'12h 00m', prog:0,   emoji:'📐', ic:'ic-d', ytId:'fNk_zzaMoSs'},
+    {name:'Quantum Mechanics',                     cat:'Physics',     inst:'Prof. N. Bose',       lec:44, hrs:'20h 00m', prog:0,   emoji:'⚡', ic:'ic-c', ytId:'CBrsWPCp_rs'},
+    {name:'Structural Engineering',                cat:'Engineering', inst:'Dr. A. Singh',        lec:32, hrs:'13h 30m', prog:0,   emoji:'🏗️', ic:'ic-a', ytId:'gD2HMEI5m7E'},
   ],
   exams: [
     {id:1, title:'Mid Term — Data Structures', subj:'CS301', dur:25, marks:50, ic:'ic-c', qs:[
@@ -836,6 +844,54 @@ const DATA = {
     {sub:'Computer Networks',    time:'14:00', fac:'Dr. Nair',      present:null,absent:null,status:'Upcoming'},
   ],
 };
+
+// Local Storage Persistence for Internships
+try {
+  const savedInt = localStorage.getItem('lyn2up_internships');
+  if (savedInt) DATA.internships = JSON.parse(savedInt);
+} catch(e) {}
+
+function saveInternships() {
+  localStorage.setItem('lyn2up_internships', JSON.stringify(DATA.internships));
+}
+
+// Local Storage Persistence for Training Enrollments
+function saveTrainingEnrollments() {
+  const enrolled = DATA.training.filter(t => t.enrolled).map(t => t.name);
+  localStorage.setItem('lyn2up_training_enrolled', JSON.stringify(enrolled));
+}
+
+try {
+  const savedTraining = localStorage.getItem('lyn2up_training_enrolled');
+  if (savedTraining) {
+    const enrolledNames = JSON.parse(savedTraining);
+    enrolledNames.forEach(name => {
+      const t = DATA.training.find(tr => tr.name === name);
+      if (t && !t.enrolled) {
+        t.enrolled = true;
+        if (!DATA.courses.find(c => c.name === t.name && c.cat === 'Training')) {
+          DATA.courses.unshift({
+            name: t.name, cat: 'Training', inst: t.provider,
+            lec: 15, hrs: t.dur, prog: 0, emoji: t.emoji, ic: t.ic, ytId: 'CBrsWPCp_rs'
+          });
+        }
+      }
+    });
+  }
+} catch(e) {}
+
+// Local Storage Persistence for Library
+try {
+  const savedBooks = localStorage.getItem('lyn2up_books');
+  if (savedBooks) DATA.books = JSON.parse(savedBooks);
+  const savedMyBooks = localStorage.getItem('lyn2up_mybooks');
+  if (savedMyBooks) DATA.myBooks = JSON.parse(savedMyBooks);
+} catch(e) {}
+
+function saveLibrary() {
+  localStorage.setItem('lyn2up_books', JSON.stringify(DATA.books));
+  localStorage.setItem('lyn2up_mybooks', JSON.stringify(DATA.myBooks));
+}
 
 // Exam state
 let EX = { exam:null, qi:0, answers:[], interval:null };
@@ -903,7 +959,7 @@ function openModal(html) {
   document.getElementById('modal-body').innerHTML = html;
   document.getElementById('modal-bg').classList.add('open');
 }
-function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); document.getElementById('modal-body').innerHTML = ''; if (window.ytProgressInterval) clearInterval(window.ytProgressInterval); }
 function handleModalBgClick(e) { if (e.target === document.getElementById('modal-bg')) closeModal(); }
 
 function animCount(id, end, suffix, ms) {
@@ -985,13 +1041,81 @@ function viewCourse(idx) {
   `);
 }
 
+let currentYTPlayer = null;
+
 function continueLesson(idx) {
-  closeModal();
   const c = DATA.courses[idx];
-  c.prog = Math.min(100, c.prog + 8);
-  if (c.prog >= 100) { c.prog = 100; toast('🏆 Course completed! Certificate earned.', 'ok'); }
-  else toast('Progress updated: ' + c.prog + '%', 'info');
-  renderMyCourses();
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-title">${c.emoji} Playing: ${c.name}</div>
+    <div class="modal-sub">Watch the lecture below. Progress is tracked automatically.</div>
+    <div style="margin-bottom:15px; border-radius:10px; overflow:hidden; background:#000; position:relative; padding-bottom:56.25%;">
+      <div id="yt-player-container" style="position:absolute; top:0; left:0; width:100%; height:100%;"></div>
+    </div>
+    <div style="margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px">
+        <span style="color:var(--muted)">Live Progress</span><strong id="live-prog-text">${c.prog}%</strong>
+      </div>
+      <div class="pbar" style="height:8px">
+        <div id="live-prog-fill" class="pfill\${c.prog === 100 ? ' done' : ''}" style="width:${c.prog}%"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="closeModal()">Close Video</button>
+    </div>
+  `;
+
+  const videoId = c.ytId || '8hly31xKli0';
+  const startProg = c.prog;
+  
+  function initPlayer() {
+    currentYTPlayer = new YT.Player('yt-player-container', {
+      height: '100%',
+      width: '100%',
+      videoId: videoId,
+      playerVars: { 'autoplay': 1, 'controls': 1 },
+      events: {
+        'onStateChange': function(event) {
+          if (event.data == YT.PlayerState.PLAYING) {
+            if(window.ytProgressInterval) clearInterval(window.ytProgressInterval);
+            window.ytProgressInterval = setInterval(() => {
+              const player = event.target;
+              if(!player || typeof player.getDuration !== 'function') return;
+              const dur = player.getDuration();
+              const cur = player.getCurrentTime();
+              if(dur > 0) {
+                 const currentVideoProg = Math.floor((cur / dur) * 100);
+                 
+                 const pTxt = document.getElementById('live-prog-text');
+                 const pFill = document.getElementById('live-prog-fill');
+                 if(pTxt) pTxt.textContent = currentVideoProg + '%';
+                 if(pFill) {
+                   pFill.style.width = currentVideoProg + '%';
+                   if (currentVideoProg === 100) pFill.classList.add('done');
+                 }
+
+                 if (currentVideoProg > c.prog) {
+                   c.prog = currentVideoProg;
+                   renderMyCourses();
+                 }
+              }
+            }, 1000);
+          } else {
+            if(window.ytProgressInterval) clearInterval(window.ytProgressInterval);
+          }
+          if (event.data == YT.PlayerState.ENDED) {
+            if (c.prog < 100) { c.prog = 100; renderMyCourses(); }
+            toast('🏆 Course completed! Certificate earned.', 'ok');
+          }
+        }
+      }
+    });
+  }
+
+  if (window.YT && YT.Player) {
+    initPlayer();
+  } else {
+    window.onYouTubeIframeAPIReady = initPlayer;
+  }
 }
 
 function renderBrowseGrid() {
@@ -1126,12 +1250,36 @@ function viewStudent(idx) {
       </div>
     </div>
     <div style="margin-bottom:16px"><span class="badge bd">${status}</span></div>
+    <div style="margin-bottom: 16px;">
+      <label style="font-size:0.8rem; color:var(--muted); margin-bottom:6px; display:block;">Send Message / Notice</label>
+      <textarea id="notice-text-${idx}" class="fi" style="width:100%; height:65px; resize:none;" placeholder="Type your message to ${s.name}..."></textarea>
+    </div>
     <div style="display:flex;gap:9px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" onclick="closeModal();toast('Notice sent to ${s.name}','ok')">📢 Send Notice</button>
+      <button class="btn btn-primary btn-sm" onclick="sendStudentNotice(${idx})">📢 Send Notice</button>
       <button class="btn btn-danger  btn-sm" onclick="deleteStudent(${idx})">🗑 Remove</button>
       <button class="btn btn-ghost   btn-sm" onclick="closeModal()">Close</button>
     </div>
   `);
+}
+
+function sendStudentNotice(idx) {
+  const s = DATA.students[idx];
+  const txt = document.getElementById('notice-text-' + idx).value.trim();
+  if (!txt) {
+    toast('Please enter a message to send.', 'err');
+    return;
+  }
+  closeModal();
+  toast('Notice sent to ' + s.name + ' successfully!', 'ok');
+  
+  if (!DATA.notices) DATA.notices = [];
+  DATA.notices.unshift({
+    title: 'Notice to ' + s.name,
+    desc: txt,
+    pri: 'Normal',
+    date: new Date().toLocaleDateString('en-GB')
+  });
+  if (typeof renderNotices === 'function') renderNotices();
 }
 
 function deleteStudent(idx) {
@@ -1572,9 +1720,15 @@ function renderInternships() {
         </div>
         <div class="int-meta">Duration: ${it.dur} · Deadline: ${it.dl}</div>
       </div>
-      <button class="btn ${it.applied ? 'btn-ghost' : 'btn-primary'} btn-sm" onclick="applyInt(${idx})" style="flex-shrink:0">
-        ${it.applied ? '✓ Applied' : 'Apply Now'}
-      </button>
+      <div style="flex-shrink:0; display:flex; gap:8px;">
+        ${it.isTrainingRecord
+          ? `<button class="btn btn-ghost btn-sm" disabled>✓ Enrolled</button>`
+          : it.applied
+            ? `<button class="btn btn-ghost btn-sm" disabled>✓ Applied</button>
+               <button class="btn btn-danger btn-sm" onclick="cancelIntApp(${idx})">Cancel</button>`
+            : `<button class="btn btn-primary btn-sm" onclick="applyInt(${idx})">Apply Now</button>`
+        }
+      </div>
     </div>`;
   }).join('');
 }
@@ -1587,11 +1741,52 @@ function setIntCat(cat, el) {
 }
 
 function applyInt(idx) {
-  if (DATA.internships[idx].applied) { toast('Already applied!', 'info'); return; }
+  const it = DATA.internships[idx];
+  if (it.applied) { toast('Already applied!', 'info'); return; }
+  
+  openModal(`
+    <div class="modal-title">${it.emoji} Apply for ${it.role}</div>
+    <div class="modal-sub">${it.co} • ${it.loc}</div>
+    
+    <div style="margin-top:15px; font-size:.9rem;">
+      <div style="margin-bottom: 12px;">
+        <label style="font-size:0.8rem; color:var(--muted); margin-bottom:6px; display:block;">Why are you a good fit? (Cover Letter)</label>
+        <textarea id="app-cover-${idx}" class="fi" style="width:100%; height:80px; resize:none;" placeholder="Detail your skills and motivation..."></textarea>
+      </div>
+      <div>
+        <label style="font-size:0.8rem; color:var(--muted); margin-bottom:6px; display:block;">Resume Link / Portfolio</label>
+        <input type="text" id="app-link-${idx}" class="fi" style="width:100%;" placeholder="https://yourportfolio.com" />
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:10px;flex-wrap:wrap; margin-top:20px;">
+      <button class="btn btn-primary" onclick="submitInt(${idx})">🚀 Submit Application</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  `);
+}
+
+function submitInt(idx) {
+  const cover = document.getElementById('app-cover-' + idx).value.trim();
+  const link = document.getElementById('app-link-' + idx).value.trim();
+  
+  if (!cover || !link) {
+    toast('Please fill in both cover letter and resume link!', 'err');
+    return;
+  }
+  
+  const urlPattern = /^https?:\/\/([\w\-]+(\.[\w\-]+)+)([\/\w\-]*)*\/?$/i;
+  if (!urlPattern.test(link)) {
+    toast('Please provide a valid URL starting with http:// or https://', 'err');
+    return;
+  }
+  
   DATA.internships[idx].applied = true;
+  saveInternships();
+  closeModal();
   renderInternships();
   renderApplied();
-  toast('Applied to ' + DATA.internships[idx].role + ' at ' + DATA.internships[idx].co + '!', 'ok');
+  toast('Application submitted for ' + DATA.internships[idx].role + ' at ' + DATA.internships[idx].co + '!', 'ok');
 }
 
 function renderApplied() {
@@ -1603,27 +1798,130 @@ function renderApplied() {
     return;
   }
   el.innerHTML = `<div class="tbl-wrap"><div class="tbl-head"><div class="tbl-title">📋 My Applications</div></div>
-    <table><thead><tr><th>Role</th><th>Company</th><th>Type</th><th>Stipend</th><th>Deadline</th><th>Status</th></tr></thead>
-    <tbody>${applied.map(i => `<tr>
+    <table style="width:100%; border-collapse:collapse;"><thead><tr><th>Role</th><th>Company</th><th>Type</th><th>Stipend</th><th>Deadline</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>${applied.map(i => {
+      const idx = DATA.internships.indexOf(i);
+      return `<tr>
       <td><strong>${i.role}</strong></td>
       <td>${i.co}</td>
       <td>${i.type}</td>
       <td>₹${(i.pay/1000).toFixed(0)}K/mo</td>
       <td>${i.dl}</td>
       <td><span class="badge bc">Under Review</span></td>
-    </tr>`).join('')}</tbody></table></div>`;
+      <td style="text-align:right;"><button class="btn btn-danger btn-sm" onclick="cancelIntApp(${idx})">Withdraw</button></td>
+    </tr>`;
+    }).join('')}</tbody></table></div>`;
+}
+
+function cancelIntApp(idx) {
+  const intRecord = DATA.internships[idx];
+  if (confirm("Are you sure you want to withdraw your application for " + intRecord.role + "?")) {
+    if (intRecord.isTrainingRecord) {
+      const baseName = intRecord.role.replace(' Training', '');
+      const t = DATA.training.find(tr => tr.name === baseName);
+      if (t) t.enrolled = false;
+      
+      DATA.internships.splice(idx, 1);
+      
+      const cIdx = DATA.courses.findIndex(c => c.name === baseName);
+      if (cIdx !== -1) DATA.courses.splice(cIdx, 1);
+      
+      renderTraining();
+      if (typeof renderBrowseGrid === 'function') renderBrowseGrid();
+      if (typeof renderMyCourses === 'function') renderMyCourses();
+    } else {
+      intRecord.applied = false;
+    }
+    saveInternships();
+    renderInternships();
+    renderApplied();
+    toast('Application withdrawn successfully.', 'info');
+  }
 }
 
 function renderTraining() {
   const el = document.getElementById('training-grid');
   if (!el) return;
-  el.innerHTML = DATA.training.map(t => `
+  el.innerHTML = DATA.training.map((t, idx) => `
     <div class="card">
       <div class="card-icon ${t.ic}">${t.emoji}</div>
       <div class="card-title">${t.name}</div>
       <div class="card-desc" style="margin-bottom:14px">By ${t.provider} · ${t.dur} · 🏅 Certificate</div>
-      <button class="btn btn-primary btn-sm" onclick="toast('Enrolled in &quot;${t.name}&quot;!','ok')">Enroll</button>
+      <div style="display:flex; gap:8px;">
+        ${t.enrolled
+          ? `<button class="btn btn-ghost btn-sm" disabled>✓ Enrolled</button>
+             <button class="btn btn-danger btn-sm" onclick="cancelTraining(${idx})">Cancel</button>`
+          : `<button class="btn btn-primary btn-sm" onclick="enrollTraining(${idx})">Enroll</button>`
+        }
+      </div>
     </div>`).join('');
+}
+
+function enrollTraining(idx) {
+  const t = DATA.training[idx];
+  if (t.enrolled) return;
+  t.enrolled = true;
+  
+  DATA.courses.unshift({
+    name: t.name,
+    cat: 'Training',
+    inst: t.provider,
+    lec: 15,
+    hrs: t.dur,
+    prog: 0,
+    emoji: t.emoji,
+    ic: t.ic,
+    ytId: 'CBrsWPCp_rs'
+  });
+
+  // Also show in Internship Browse portal
+  DATA.internships.unshift({
+    role: t.name,
+    co: t.provider,
+    loc: 'Online',
+    type: 'Training',
+    pay: 0,
+    dur: t.dur,
+    dl: 'Open',
+    skills: ['Certification'],
+    cat: 'Technology',
+    emoji: t.emoji,
+    applied: true,
+    isTrainingRecord: true
+  });
+
+  saveTrainingEnrollments();
+  saveInternships();
+  renderTraining();
+  renderInternships();
+  renderBrowseGrid();
+  renderMyCourses();
+  
+  toast('Success! "' + t.name + '" enrolled successfully.', 'ok');
+}
+
+function cancelTraining(idx) {
+  const t = DATA.training[idx];
+  t.enrolled = false;
+  
+  const cIdx = DATA.courses.findIndex(c => c.name === t.name && c.cat === 'Training');
+  if (cIdx !== -1) DATA.courses.splice(cIdx, 1);
+  
+  // Clean up cache of internship records if they existed from previous sessions
+  const iIdx = DATA.internships.findIndex(i => i.isTrainingRecord && i.role === t.name + ' Training');
+  if (iIdx !== -1) {
+    DATA.internships.splice(iIdx, 1);
+    saveInternships();
+    renderInternships();
+    renderApplied();
+  }
+  
+  saveTrainingEnrollments();
+  renderTraining();
+  renderBrowseGrid();
+  renderMyCourses();
+  
+  toast('Training enrollment cancelled.', 'info');
 }
 
 function postInternship() {
@@ -1639,6 +1937,7 @@ function postInternship() {
   const cat  = document.getElementById('pi-cat').value;
   if (!role || !co || !loc) { toast('Role, Company, and Location are required.', 'err'); return; }
   DATA.internships.unshift({ role, co, loc, type, pay, dur, dl, skills, cat, emoji:'🏢', applied:false });
+  saveInternships();
   toast('"' + role + '" at ' + co + ' posted!', 'ok');
   ['pi-role','pi-co','pi-loc','pi-pay','pi-dur','pi-skills'].forEach(id => document.getElementById(id).value = '');
   renderInternships();
@@ -1708,6 +2007,68 @@ function viewBook(idx) {
 function issueBook(idx) {
   const b = DATA.books[idx];
   if (b.avail <= 0 || b.myIssued) { toast('Book not available.', 'err'); return; }
+  openModal(`
+    <div class="modal-title">📝 Issue: ${b.title}</div>
+    <div class="modal-sub">by ${b.author} · ${b.avail} copies available</div>
+    
+    <div style="margin-top:15px; font-size:.9rem;">
+      <div style="margin-bottom:12px">
+        <label style="font-size:0.8rem; color:var(--muted); margin-bottom:6px; display:block;">Student Name *</label>
+        <input type="text" id="issue-name" class="fi" style="width:100%;" placeholder="Enter your full name" />
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+        <div>
+          <label style="font-size:0.8rem; color:var(--muted); margin-bottom:6px; display:block;">Roll Number *</label>
+          <input type="text" id="issue-roll" class="fi" style="width:100%;" placeholder="e.g. CS2021041" />
+        </div>
+        <div>
+          <label style="font-size:0.8rem; color:var(--muted); margin-bottom:6px; display:block;">Department *</label>
+          <select id="issue-dept" class="fi" style="width:100%;">
+            <option value="">Select Dept</option>
+            <option>Computer Science</option>
+            <option>Electronics</option>
+            <option>Mechanical</option>
+            <option>Civil Engineering</option>
+            <option>Information Tech.</option>
+            <option>Mathematics</option>
+            <option>Physics</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:0.8rem; color:var(--muted); margin-bottom:6px; display:block;">Purpose of Issue *</label>
+        <select id="issue-purpose" class="fi" style="width:100%;">
+          <option value="">Select Purpose</option>
+          <option>Semester Study</option>
+          <option>Project Reference</option>
+          <option>Research Work</option>
+          <option>Competitive Exam Prep</option>
+          <option>General Reading</option>
+        </select>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:10px;flex-wrap:wrap; margin-top:18px;">
+      <button class="btn btn-primary" onclick="submitIssueBook(${idx})">📖 Confirm Issue</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  `);
+}
+
+function submitIssueBook(idx) {
+  const name = document.getElementById('issue-name').value.trim();
+  const roll = document.getElementById('issue-roll').value.trim();
+  const dept = document.getElementById('issue-dept').value;
+  const purpose = document.getElementById('issue-purpose').value;
+  
+  if (!name) { toast('Please enter your name.', 'err'); return; }
+  if (!roll) { toast('Please enter your roll number.', 'err'); return; }
+  if (!dept) { toast('Please select your department.', 'err'); return; }
+  if (!purpose) { toast('Please select the purpose of issue.', 'err'); return; }
+  
+  const b = DATA.books[idx];
+  if (b.avail <= 0 || b.myIssued) { toast('Book no longer available.', 'err'); return; }
+  
   b.avail--;
   b.myIssued = true;
   const issued = new Date();
@@ -1715,12 +2076,15 @@ function issueBook(idx) {
   due.setDate(due.getDate() + 14);
   DATA.myBooks.push({
     title: b.title, author: b.author,
+    studentName: name, rollNo: roll, department: dept, purpose: purpose,
     issuedOn: issued.toLocaleDateString('en-IN'),
     dueDate:  due.toLocaleDateString('en-IN'),
     overdue: false, _idx: idx,
   });
+  
+  saveLibrary();
   closeModal();
-  toast('"' + b.title + '" issued! Due: ' + due.toLocaleDateString('en-IN'), 'ok');
+  toast('"' + b.title + '" issued to ' + name + '! Due: ' + due.toLocaleDateString('en-IN'), 'ok');
   renderBooks();
   renderMyBooks();
   const el = document.getElementById('lib-issued');
@@ -1748,13 +2112,14 @@ function renderMyBooks() {
   const el = document.getElementById('mybooks-tbody');
   if (!el) return;
   if (!DATA.myBooks.length) {
-    el.innerHTML = '<tr><td colspan="6" style="color:var(--muted);padding:20px;text-align:center">No books currently issued.</td></tr>';
+    el.innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:20px;text-align:center">No books currently issued.</td></tr>';
     return;
   }
   el.innerHTML = DATA.myBooks.map((b, i) => `
     <tr>
       <td><strong>${b.title}</strong></td>
       <td style="color:var(--muted)">${b.author}</td>
+      <td>${b.studentName || 'N/A'}</td>
       <td>${b.issuedOn}</td>
       <td>${b.dueDate}</td>
       <td><span class="badge ${b.overdue ? 'be' : 'bd'}">${b.overdue ? 'Overdue' : 'Active'}</span></td>
@@ -1767,6 +2132,7 @@ function returnBook(i) {
   DATA.books[b._idx].avail++;
   DATA.books[b._idx].myIssued = false;
   DATA.myBooks.splice(i, 1);
+  saveLibrary();
   renderMyBooks();
   renderBooks();
   toast('"' + b.title + '" returned successfully.', 'ok');
@@ -1784,6 +2150,7 @@ function addBook() {
   const bgs   = ['1e3a5f,2d6a4f','4a1942,831843','1a2e5e,163153','3b1f08,7c3a00','134e4a,0f766e'];
   const bg    = bgs[Math.floor(Math.random() * bgs.length)];
   DATA.books.unshift({ title, author, isbn, cat, copies, avail:copies, type, emoji: ems[cat] || '📚', bg, myIssued:false });
+  saveLibrary();
   toast('"' + title + '" added to library!', 'ok');
   ['ab-title','ab-author','ab-isbn','ab-copies'].forEach(id => document.getElementById(id).value = '');
   renderBooks();
